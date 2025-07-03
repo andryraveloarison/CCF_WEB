@@ -14,8 +14,8 @@ export default defineConfig({
       },
       includeAssets: ['favicon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'data/songs.json', 'lyrics/*.txt'],
       manifest: {
-        name: 'Nananjy AI',
-        short_name: 'Nananjy AI',
+        name: 'CCF',
+        short_name: 'CCF',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
