@@ -1,21 +1,38 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 import Chat from './pages/Chat';
 import Songs from './pages/SongList';
 import Lyrics from './pages/Lyrics';
+import About from './pages/About';
 
+import Navbar from './components/Navbar';
+import BottomNav from './components/BottomNav';
+import { useEffect } from 'react';
 
-const App: React.FC = () => {
-
+const AppLayout = () => {
+  const location = useLocation();
+  const hideBottomNav = location.pathname === '/chat' || location.pathname === '/about';
 
   return (
-    <Router>
+    <div className="flex flex-col h-screen">
+      <Navbar />
+      <div id="main-scroll" className="flex-1 overflow-auto">
+        <Routes>
+          <Route path="/" element={<Songs />} />
+          <Route path="/lyrics/:id" element={<Lyrics />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </div>
+      {!hideBottomNav && <BottomNav />}
+    </div>
+  );
+};
 
-      <Routes>
-        <Route path="/" element={<Songs />} />
-        <Route path="/lyrics/:id" element={<Lyrics />} />
-        <Route path="/chat" element={<Chat />} />
-      </Routes>
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AppLayout />
     </Router>
   );
 };

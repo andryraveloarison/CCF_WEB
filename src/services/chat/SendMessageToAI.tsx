@@ -15,7 +15,7 @@ export const sendMessageToAI = async (
   userMessage: string,
   messageId: number,
   history: Message[]
-): Promise<Message> => {
+): Promise<Message | undefined> => {
   // Construire l'historique des messages pour l'API
 
   console.log(nananjyDescription)
@@ -64,10 +64,11 @@ export const sendMessageToAI = async (
     };
   } catch (error) {
     console.error('Erreur lors de l\'appel à l\'API:', error);
-    return {
-      id: messageId,
-      text: 'Erreur: Impossible de contacter l\'IA.',
-      sender: 'ai',
-    };
+    alert("Verifier votre connexion internet ou revener plus ")
+    // return {
+    //   id: messageId,
+    //   text: 'Erreur: Impossible de contacter l\'IA.',
+    //   sender: 'ai',
+    // };
   }
 };

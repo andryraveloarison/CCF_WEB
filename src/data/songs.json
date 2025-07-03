@@ -1,6 +1,17 @@
 [
   { "id": "1", "title": "Attire-moi à Toi" },
   { "id": "2", "title": "Au dessus de tout" },
-  { "id": "3", "title": "Avec la foi" }
+  { "id": "3", "title": "Avec la foi" },
+  { "id": "4", "title": "C'est en Toi"},
+  { "id": "5", "title": "C'est l'air que je respire"},
+  { "id": "6", "title": "Cherchez d'abord le Royaume de Dieu"},
+  { "id": "7", "title": "Dans ta main"},
+  { "id": "8", "title": "En toi Seigneur"},
+  { "id": "9", "title": "Entends mon coeur"},
+  { "id": "10", "title": "Face à Face"},
+  { "id": "11", "title": "Il est exalté"},
+  { "id": "12", "title": "Je loue Ton Nom Eternel"},
+  { "id": "13", "title": "Je veux n’être qu’à Toi" }
+
 
 ]

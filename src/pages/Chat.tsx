@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import ChatMessage from '../components/ChatMessage';
 import { clearMessages, getMessages, saveMessages } from '../services/chat/ManageMessage';
 import { sendMessageToAI } from '../services/chat/SendMessageToAI';
-import { RiChatNewLine } from "react-icons/ri";
 
 interface Message {
   id: number;
@@ -43,7 +42,8 @@ const App: React.FC = () => {
     try {
       setIsThinking(true);
       const aiMessage = await sendMessageToAI(input, messages.length + 2, messages);
-      setMessages((prev) => [...prev, aiMessage]);
+    
+      aiMessage && setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Erreur lors de l\'appel à l\'API:', error);
     } finally {
@@ -67,33 +67,10 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-gray-100">
-      {/* Header */}
-      <header className="bg-[#121212] px-6 py-4 border-b border-gray-800 flex items-center justify-between">
-        <div className="flex items-center space-x-1">
-          <div className="text-xl font-semibold flex items-center">
-            <span className="text-white">Nananjy</span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3">
-          <RiChatNewLine onClick={handleNewChat} className='p-2 w-10 h-10 rounded-full cursor-pointer hover:bg-gray-800'/>
-
-          <button className="p-2 rounded-full hover:bg-gray-800 cursor-pointer ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-          </button>
-          <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white">
-            {userName.charAt(0)}
-          </div>
-
-
-        </div>
-      </header>
-      
+    
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
-        {messages.length === 0 ? (
+      <div className="flex-1 overflow-y-auto">
+      {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full">
             <div className="text-center p-8 max-w-2xl">
               <h1 className="text-3xl font-bold mb-2">Nananjy</h1>
@@ -105,13 +82,13 @@ const App: React.FC = () => {
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M12 8v4l2 2"></path>
                   </svg>
-                  <span>Dernières nouvelles</span>
+                  <span>Rechercher une parole</span>
                 </button>
                 <button className="flex items-center justify-center cursor-pointer space-x-2 p-4 rounded-lg border border-gray-700 hover:bg-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                   </svg>
-                  <span>Modes</span>
+                  <span>Titre d'une chanson</span>
                 </button>
               </div>
             </div>
