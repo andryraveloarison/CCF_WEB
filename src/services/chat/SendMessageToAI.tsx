@@ -39,13 +39,13 @@ export const sendMessageToAI = async (
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer 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', // Remplacez par votre clé API
+        Authorization: 'Bearer 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', // Remplacez par votre clé API
         'HTTP-Referer': 'VOTRE_SITE_URL', // Remplacez par l'URL de votre site
         'X-Title': 'VOTRE_NOM_SITE', // Remplacez par le nom de votre site
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick:free',
+        model: 'meta-llama/llama-4-scout:free',
         messages: apiMessages,
       }),
     });

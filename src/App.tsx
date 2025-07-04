@@ -15,7 +15,7 @@ const AppLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-      <div id="main-scroll" className="flex-1 overflow-auto">
+      <div className="h-[80vh] bg-black">
         <Routes>
           <Route path="/" element={<Songs />} />
           <Route path="/lyrics/:id" element={<Lyrics />} />

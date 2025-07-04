@@ -51,6 +51,7 @@ const App: React.FC = () => {
     }
   };
 
+;
 
   
   useEffect(() => {
