@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import songs from "../data/lyrics.json";
 
 const SongList = () => {
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
 
   const sortedSongs = [...songs].sort((a, b) =>
     a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
@@ -24,7 +24,7 @@ const SongList = () => {
     <div className="bg-white text-gray-800 px-4 pt-4 pb-20 rounded-tr-[30px] h-[calc(100vh-64px)]"> {/* 64px est une estimation de la navbar */}
       <div
         // id="main-scroll"
-        className=" h-full pr-1"auto
+        className=" h-full pr-1"
       >
         <h2 className="text-lg font-semibold mb-2">Liste des chants</h2>
 
