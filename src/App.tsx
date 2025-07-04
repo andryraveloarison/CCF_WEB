@@ -4,8 +4,6 @@ import Chat from './pages/Chat';
 import Songs from './pages/SongList';
 import Lyrics from './pages/Lyrics';
 import About from './pages/About';
-
-import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 
 const AppLayout = () => {
@@ -14,8 +12,7 @@ const AppLayout = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Navbar />
-      <div className="h-[80vh] bg-black">
+      <div className="h-[80vh]">
         <Routes>
           <Route path="/" element={<Songs />} />
           <Route path="/lyrics/:id" element={<Lyrics />} />

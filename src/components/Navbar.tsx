@@ -2,7 +2,7 @@ import { Menu, Search } from 'lucide-react';
 
 const Navbar = () => {
   return (
-    <div className="relative z-50 bg-black text-white pb-5 rounded-bl-[30px]">
+    <div className=" fixed relative z-50 bg-black text-white pb-5 rounded-bl-[30px]">
       {/* Conteneur principal */}
       <div className="flex items-center justify-between px-4 pt-6">
         <Menu size={24} />

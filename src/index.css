@@ -8,7 +8,7 @@
   
   /* Scrollbar thumb (partie que l'on fait glisser) */
   ::-webkit-scrollbar-thumb {
-    background-color: #504f4fc7; /* couleur violet/indigo par exemple */
+    background-color: rgba(221, 133, 2, 0.973); /* couleur violet/indigo par exemple */
     border-radius: 10px;
   }
   
