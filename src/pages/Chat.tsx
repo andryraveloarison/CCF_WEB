@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import ChatMessage from '../components/ChatMessage';
-import { clearMessages, getMessages, saveMessages } from '../services/chat/ManageMessage';
+import { getMessages, saveMessages } from '../services/chat/ManageMessage';
 import { sendMessageToAI } from '../services/chat/SendMessageToAI';
 
 interface Message {
