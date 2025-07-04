@@ -2,11 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import songs from "../data/lyrics.json";
 
-interface Song {
-  id: string;
-  title: string;
-  lyrics?: string;
-}
 
 const SongList = () => {
   const [search, setSearch] = useState("");

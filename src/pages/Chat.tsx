@@ -14,7 +14,6 @@ const App: React.FC = () => {
   const [input, setInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isThinking, setIsThinking] = useState<boolean>(false);
-  const userName = "Andry"; // Nom de l'utilisateur
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -52,12 +51,6 @@ const App: React.FC = () => {
     }
   };
 
-
-  const handleNewChat = () => {
-    clearMessages(); // Appelle la fonction pour vider le localStorage
-    // Optionnel : redémarre la conversation, réinitialise l’état, etc.
-    setMessages([]);
-  };
 
   
   useEffect(() => {

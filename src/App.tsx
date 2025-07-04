@@ -7,7 +7,6 @@ import About from './pages/About';
 
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
-import { useEffect } from 'react';
 
 const AppLayout = () => {
   const location = useLocation();
