@@ -25,19 +25,17 @@ const SongList = () => {
     <>
       {/* 🔲 Barre du haut fixe */}
       <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white  rounded-bl-[30px]">
-      <div className="flex items-center justify-between px-4 pt-6">
-      <Menu size={24} />
+        <div className="flex items-center justify-between px-4 pt-6">
+          <Menu size={24} />
 
-      <button
-        onClick={() => window.location.reload()}
-        className="p-1 rounded transition duration-200"
-        title="Actualiser"
-      >
-        <RefreshCcw size={24} />
-      </button>
-      </div>
-
-
+          <button
+            onClick={() => window.location.reload()}
+            className="p-1 rounded transition duration-200"
+            title="Actualiser"
+          >
+            <RefreshCcw size={24} />
+          </button>
+        </div>
         <div className="px-4 mt-4">
           <div className="flex items-center bg-white text-black rounded-full px-4 py-2">
             <input

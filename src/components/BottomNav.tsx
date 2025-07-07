@@ -13,7 +13,6 @@ const BottomNav = () => {
         }
       >
         <span>🎵</span>
-        <span>Chants</span>
       </NavLink>
       <NavLink 
         to="/about" 
@@ -24,7 +23,6 @@ const BottomNav = () => {
         }
       >
         <span>ℹ️</span>
-        <span>À propos</span>
       </NavLink>
       <NavLink 
         to="/chat" 
@@ -35,7 +33,6 @@ const BottomNav = () => {
         }
       >
         <span>💬</span>
-        <span>Chat</span>
       </NavLink>
     </nav>
   );

@@ -12,7 +12,7 @@ export default defineConfig({
       devOptions: {
         enabled: true, // Activer le Service Worker en mode développement
       },
-      includeAssets: ['icon.png', 'icons/icon-192.png', 'icons/icon-512.png', 'data/songs.json', 'lyrics/*.txt'],
+      includeAssets: ['icon.png', 'icons/icon-192.png', 'icons/icon-512.png', 'data/songs.json', 'lyrics/*.txt, ', 'logo.png'],
       manifest: {
         name: 'CCF',
         short_name: 'CCF',
