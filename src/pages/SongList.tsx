@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import songs from "../data/lyrics.json";
-import { Menu, RefreshCcw, Search } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import ReloadButton from '../components/ReloadButton';
 
 const SongList = () => {

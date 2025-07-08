@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams,  useNavigate } from 'react-router-dom';
 import lyricsData from '../data/lyrics.json';
 import { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
