@@ -1,38 +1,47 @@
 // components/BottomNav.tsx
 import { NavLink } from 'react-router-dom';
+import { Music, Info, MessageCircle } from 'lucide-react';
 
 const BottomNav = () => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 flex justify-around items-center py-2 md:hidden z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t  flex justify-around items-center py-3 md:hidden z-50">
       <NavLink 
         to="/" 
         className={({ isActive }) => 
-          `flex flex-col items-center text-sm ${
-            isActive ? 'text-blue-600 font-bold' : 'text-gray-500'
-          }`
+          `transition duration-200 ${
+            isActive 
+              ? 'text-[rgba(221,133,2,0.973)]' 
+              : 'text-white opacity-80'
+          } hover:text-[rgba(221,133,2,0.973)]`
         }
       >
-        <span>🎵</span>
+        <Music size={24} />
       </NavLink>
+
       <NavLink 
         to="/about" 
         className={({ isActive }) => 
-          `flex flex-col items-center text-sm ${
-            isActive ? 'text-blue-600 font-bold' : 'text-gray-500'
-          }`
+          `transition duration-200 ${
+            isActive 
+              ? 'text-[rgba(221,133,2,0.973)]' 
+              : 'text-white opacity-80'
+          } hover:text-[rgba(221,133,2,0.973)]`
         }
       >
-        <span>ℹ️</span>
+        <Info size={24} />
       </NavLink>
+
       <NavLink 
         to="/chat" 
         className={({ isActive }) => 
-          `flex flex-col items-center text-sm ${
-            isActive ? 'text-blue-600 font-bold' : 'text-gray-500'
-          }`
+          `transition duration-200 ${
+            isActive 
+              ? 'text-[rgba(221,133,2,0.973)]' 
+              : 'text-white opacity-80'
+          } hover:text-[rgba(221,133,2,0.973)]`
         }
       >
-        <span>💬</span>
+        <MessageCircle size={24} />
       </NavLink>
     </nav>
   );

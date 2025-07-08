@@ -55,7 +55,7 @@ const SongList = () => {
 
         <div className='rounded-tr-[30px] w-full pt-5 left-0 w-screen bg-white text-gray-800  pb-20 h-[calc(100vh-100px)]'>
 
-      <h2 className="text-lg font-semibold mb-2 px-4">Liste des chants</h2>
+      <h2 className="text-xl font-bold mb-2 px-5">Liste des chants</h2>
         <div className=''>
 
         {/* Liste scrollable */}
