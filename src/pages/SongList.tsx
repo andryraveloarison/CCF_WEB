@@ -32,7 +32,7 @@ const SongList = () => {
           <ReloadButton/>
         </div>
         <div className="px-4 mt-4">
-          <div className="flex items-center bg-white text-black rounded-full px-4 py-2">
+          <div className="flex items-center bg-white text-black rounded-[12px] px-4 py-2">
             <input
               type="text"
               placeholder="Recherche..."
