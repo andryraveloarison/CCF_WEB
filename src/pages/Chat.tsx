@@ -69,7 +69,7 @@ const handleNewChat = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-gray-100">
-     <header className=" w-full  fixed px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+     <header className=" w-full bg-[#121212] fixed px-6 py-4 border-b border-gray-800 flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 <div className="text-xl font-semibold flex items-center">
                 <button
@@ -111,9 +111,9 @@ const handleNewChat = () => {
             </div>
           </div>
         ) : (
-          <div className=" space-y-6 bg-red">
-           
-            <div className="pt-25 px-4 pb-20 h-screen ">            
+           <div className=" space-y-6 bg-red">
+
+            <div className="pt-25 px-10 ">            
           {  messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
@@ -130,16 +130,17 @@ const handleNewChat = () => {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef}  />
+
             </div>
+            <div ref={messagesEndRef}  />
 
           </div>
           
         )}
       </div>
       <div className="">
-        <div className="mx-auto max-w-4xl flex justify-center">
-          <div className="relative w-[55vw] ">
+      <div className="mx-auto bg-transparent max-w-4xl flex justify-center">
+      <div className="relative w-[55vw] ">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}

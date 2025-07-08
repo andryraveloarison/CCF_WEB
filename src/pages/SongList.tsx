@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import songs from "../data/lyrics.json";
 import { Menu, RefreshCcw, Search } from 'lucide-react';
+import ReloadButton from '../components/ReloadButton';
 
 const SongList = () => {
   const [search, setSearch] = useState("");
@@ -28,13 +29,7 @@ const SongList = () => {
         <div className="flex items-center justify-between px-4 pt-6">
           <Menu size={24} />
 
-          <button
-            onClick={() => window.location.reload()}
-            className="p-1 rounded transition duration-200"
-            title="Actualiser"
-          >
-            <RefreshCcw size={24} />
-          </button>
+          <ReloadButton/>
         </div>
         <div className="px-4 mt-4">
           <div className="flex items-center bg-white text-black rounded-full px-4 py-2">

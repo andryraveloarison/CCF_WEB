@@ -1,5 +1,6 @@
 import { ArrowLeft, RefreshCcw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ReloadButton from "../components/ReloadButton";
 
 const About = () => {
   const navigate = useNavigate();
@@ -13,13 +14,8 @@ const About = () => {
             <ArrowLeft size={24} />
           </button>
 
-          <button
-            onClick={() => window.location.reload()}
-            className="p-1 rounded transition duration-200"
-            title="Actualiser"
-          >
-            <RefreshCcw size={24} />
-          </button>
+          <ReloadButton/>
+
         </div>
 
         <div className="flex-1 flex items-center justify-center">
@@ -50,7 +46,7 @@ const About = () => {
         </div>
 
         <div className="text-center text-sm text-gray-500 pb-4">
-          Made with ❤️
+          Made with 🖤
         </div>
       </div>
     </div>

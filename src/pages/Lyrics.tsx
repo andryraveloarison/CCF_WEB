@@ -24,7 +24,6 @@ const Lyrics = () => {
     return (
       <div className="p-4 min-h-screen">
         <h2 className="text-xl font-bold">Chant non trouvé</h2>
-        <Link to="/" className="text-blue-500 hover:underline">← Retour</Link>
       </div>
     );
   }
