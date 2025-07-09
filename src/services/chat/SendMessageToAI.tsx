@@ -26,7 +26,6 @@ export const sendMessageToAI = async (
     }\n`
   ).join('\n');
 
-  const authorization = 'Bearer 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'
   // 📜 Messages pour l'API
   const apiMessages: APIMessage[] = [
     {
@@ -43,12 +42,13 @@ export const sendMessageToAI = async (
     },
   ];
 
-  console.log("try")
+  const authorization = `Bearer ${import.meta.env.VITE_IA_KEY}`;
+  console.log(authorization)
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: authorization,
+        Authorization: `Bearer ${import.meta.env.VITE_IA_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -56,6 +56,8 @@ export const sendMessageToAI = async (
         messages: apiMessages,
       }),
     });
+
+
 
     if (!response.ok) {
       throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
