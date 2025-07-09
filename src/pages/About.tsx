@@ -6,7 +6,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col">
+    <div className="fixed flex flex-col">
       {/* 🔲 Barre du haut fixe */}
       <div className="top-0 left-0 h-[40vh] right-0 z-50 bg-black text-white rounded-br-[30px] rounded-bl-[30px] flex flex-col">
         <div className="flex items-center justify-between px-4 pt-6">
