@@ -26,6 +26,7 @@ export const sendMessageToAI = async (
     }\n`
   ).join('\n');
 
+  const authorization = 'Bearer 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'
   // 📜 Messages pour l'API
   const apiMessages: APIMessage[] = [
     {
@@ -47,7 +48,7 @@ export const sendMessageToAI = async (
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: authorization,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
