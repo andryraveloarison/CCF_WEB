@@ -132,7 +132,7 @@ const handleNewChat = () => {
             )}
 
             </div>
-            <div ref={messagesEndRef} className='pb-18' />
+            <div ref={messagesEndRef} className='pb-20' />
 
           </div>
           

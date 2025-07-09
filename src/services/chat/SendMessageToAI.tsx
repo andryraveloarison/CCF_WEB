@@ -46,9 +46,7 @@ export const sendMessageToAI = async (
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer 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',
-        'HTTP-Referer': 'https://ton-site.com/',
-        'X-Title': 'Nananjy Assistant',
+        Authorization: `Bearer ${import.meta.env.VITE_IA_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
