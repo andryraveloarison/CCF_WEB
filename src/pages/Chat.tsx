@@ -69,7 +69,7 @@ const handleNewChat = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-gray-100">
-     <header className=" w-full bg-[#121212] fixed px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+     <header className="z-50000 w-full bg-[#121212] fixed px-6 py-4 border-b border-gray-800 flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 <div className="text-xl font-semibold flex items-center">
                 <button
@@ -86,7 +86,7 @@ const handleNewChat = () => {
               </div>
             </header>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto">
+      <div className=" flex-1 overflow-y-auto">
       {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full">
             <div className="text-center p-8 max-w-2xl">
@@ -111,7 +111,7 @@ const handleNewChat = () => {
             </div>
           </div>
         ) : (
-           <div className=" space-y-6 bg-red">
+           <div className="fixed h-screen w-screen overflow-y-auto space-y-6">
 
             <div className="pt-25 px-10 ">            
           {  messages.map((message) => (
@@ -132,7 +132,7 @@ const handleNewChat = () => {
             )}
 
             </div>
-            <div ref={messagesEndRef}  />
+            <div ref={messagesEndRef} className='pb-18' />
 
           </div>
           
@@ -140,7 +140,7 @@ const handleNewChat = () => {
       </div>
       <div className="">
       <div className="mx-auto bg-transparent max-w-4xl flex justify-center">
-      <div className="relative w-[55vw] ">
+      <div className="relative w-[55vw] bg-[#121212] border border-[rgba(221,133,2,0.263)] rounded-xl">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -151,7 +151,7 @@ const handleNewChat = () => {
                 }
               }}
               placeholder="Posez une question"
-              className="w-full h-25 p-4 pr-12 bg-grey-600 border border-[rgba(221,133,2,0.263)] rounded-xl focus:outline-none focus:border-grey-500 resize-none text-white placeholder-gray-400"
+              className="w-full h-25 p-4 pr-12 bg-grey-600  focus:outline-none focus:border-grey-500 resize-none text-white placeholder-gray-400"
               rows={1}
             />
             <div className="absolute right-2 bottom-2 flex space-x-1">

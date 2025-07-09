@@ -4,7 +4,7 @@ import { Music, Info, MessageCircle } from 'lucide-react';
 
 const BottomNav = () => {
   return (
-    <nav className="min-h-[40px] mx-4 rounded-tl-[20px] rounded-tr-[20px] fixed bottom-0 left-0 right-0 bg-black border-t  flex justify-around items-center py-3 md:hidden z-50">
+    <nav className="min-h-[60px] mx-4 rounded-tl-[20px] rounded-tr-[20px] fixed bottom-0 left-0 right-0 bg-black border-t  flex justify-around items-center py-3 md:hidden z-50">
       <NavLink 
         to="/" 
         className={({ isActive }) => 
