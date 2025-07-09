@@ -42,11 +42,12 @@ export const sendMessageToAI = async (
     },
   ];
 
+  console.log("try")
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer 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`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
