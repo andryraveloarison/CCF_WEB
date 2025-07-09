@@ -26,7 +26,7 @@ export const sendMessageToAI = async (
     }\n`
   ).join('\n');
 
-  const authorization = 'Bearer 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'
+  const authorization = 'Bearer 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'
   // 📜 Messages pour l'API
   const apiMessages: APIMessage[] = [
     {
