@@ -56,7 +56,7 @@ const SongList = () => {
         {/* Liste scrollable */}
         <div
           id="main-scroll"
-          className="px-4 overflow-y-auto max-h-[calc(100vh-240px)] pb-[75px] space-y-2"
+          className="px-4 overflow-y-auto max-h-[calc(100vh-240px)] pb-[10vh] space-y-2"
         >
           {filteredSongs.map((song, index) => (
             <Link
