@@ -16,17 +16,17 @@ export const sendMessageToAI = async (
   messageId: number,
   history: Message[]
 ): Promise<Message | undefined> => {
-  // 🧠 Contexte des chansons (limité à 300 caractères par chanson)
+  // 🧠 Contexte des chansons (limité à 10000 caractères par chanson)
   const songContext = songs.map(song =>
     `Titre: ${song.title}\nParoles: ${song.lyrics
       .slice(0, 10000)
-      .replace(/<br\s*\/?>/gi, '\n') // remplacer <br> ou <br /> par des retours à la ligne
-      .replace(/\*/g, '') // retirer les *
-      .replace(/<\/?[^>]+(>|$)/g, '') // retirer toutes les balises HTML restantes
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/\*/g, '')
+      .replace(/<\/?[^>]+(>|$)/g, '') // Supprimer les balises HTML
     }\n`
   ).join('\n');
 
-  // 📜 Messages pour l'API
+  // 📜 Construction des messages pour l’API
   const apiMessages: APIMessage[] = [
     {
       role: 'system',
@@ -42,22 +42,14 @@ export const sendMessageToAI = async (
     },
   ];
 
-  const authorization = `Bearer ${import.meta.env.VITE_IA_KEY}`;
-  console.log(authorization)
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const response = await fetch('https://hayback.onrender.com/api/ia', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_IA_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick:free',
-        messages: apiMessages,
-      }),
+      body: JSON.stringify({ messages: apiMessages }),
     });
-
-
 
     if (!response.ok) {
       throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
@@ -66,11 +58,11 @@ export const sendMessageToAI = async (
     const data = await response.json();
     let aiResponse = data.choices?.[0]?.message?.content || "Désolé, je n’ai pas trouvé.";
 
-    // Nettoyer la réponse de l’IA
+    // Nettoyer la réponse
     aiResponse = aiResponse
-      .replace(/<br\s*\/?>/gi, '\n')   // convertit les <br> en \n
-      .replace(/\*/g, '')             // retire les *
-      .replace(/<\/?[^>]+(>|$)/g, '') // retire le HTML s'il y en a
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/\*/g, '')
+      .replace(/<\/?[^>]+(>|$)/g, '');
 
     return {
       id: messageId,
