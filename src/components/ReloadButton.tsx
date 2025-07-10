@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RefreshCcw, Loader2 } from "lucide-react";
 
 type Props = {
-  onReload?: () => void | null;
+  onReload?: () => void ;
 };
 
 const ReloadButton = ({ onReload }: Props) => {
