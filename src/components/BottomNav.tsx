@@ -19,7 +19,7 @@ const BottomNav = () => {
       </NavLink>
 
       <NavLink 
-        to="/addSong" 
+        to="/Verify" 
         className={({ isActive }) => 
           `transition duration-200 ${
             isActive 

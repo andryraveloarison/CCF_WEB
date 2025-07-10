@@ -5,11 +5,11 @@ import {
   Music2,
   User,
   Save,
-  AlertTriangle,
-  KeyRound,
-  Info
+  ArrowLeft
 } from "lucide-react";
-import { saveSong } from "../services/song/ManageSong"; // ajuste le chemin si nécessaire
+import { useNavigate } from "react-router-dom";
+import { saveSong, getSongsFromApi } from "../services/song/ManageSong";
+import SaveSongLoader from "../components/SaveSongLoader";
 
 type LyricsBlock = {
   id: number;
@@ -18,14 +18,12 @@ type LyricsBlock = {
 };
 
 const AddSongForm = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [lyrics, setLyrics] = useState<LyricsBlock[]>([]);
-  const [code, setCode] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState("");
-
-  const VALID_CODE = "1234"; 
+  const [loading, setLoading] = useState(false);
 
   const addLyricsBlock = (type: "couplet" | "refrain") => {
     setLyrics((prev) => [...prev, { id: Date.now(), type, text: "" }]);
@@ -50,169 +48,134 @@ const AddSongForm = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
+      setLoading(false);
       return;
     }
-  
+
     setError("");
-  
-    // 🔁 Formatage des lyrics avec <br><br> et <b> pour les refrains
+
     const formattedLyrics = lyrics
       .map((block) => {
-        const content = `${block.type.toUpperCase()}:\n${block.text}`;
-        return block.type === "refrain" ? `<b>${content}</b>` : content;
+        const textWithBr = block.text.trim().replace(/\n/g, "<br>");
+        return block.type === "refrain" ? `<b>${textWithBr}</b>` : textWithBr;
       })
       .join("<br><br>");
-  
-    const song = {
-      title,
-      author,
-      lyrics: formattedLyrics,
-    };
-  
+
+    const song = { title, author, lyrics: formattedLyrics };
+
     const success = await saveSong(song);
     if (success) {
-      await fetch("https://hayback.onrender.com/api/song/getAll", { mode: "cors" })
-      alert("✅ Chanson enregistrée avec succès !");
-      // Optionnel : vider les champs
+      await getSongsFromApi();
+      alert("🎉 Chanson enregistrée !");
       setTitle("");
       setAuthor("");
       setLyrics([]);
     } else {
       setError("❌ Une erreur est survenue lors de l'enregistrement.");
     }
-  };
-  
-
-  const verifyCode = () => {
-    if (code === VALID_CODE) {
-      setIsVerified(true);
-      setError("");
-    } else {
-      setError("Code de vérification incorrect.");
-    }
+    setLoading(false);
   };
 
   return (
-    <div className="p-4 space-y-4">
-      {/* 🔒 Vérification obligatoire */}
-      {!isVerified && (
-        <>
-          <div className="flex items-start gap-2 text-blue-700 bg-blue-100 border border-blue-300 rounded p-3">
-            <Info size={20} className="mt-0.5" />
-            <p>
-              Pour ajouter une chanson, veuillez entrer le code de vérification fourni par l'administrateur.
-            </p>
-          </div>
+    <div className="p-4 space-y-4 pb-20">
+        <div className="fixed flex items-center justify-center top-0 left-0 z-50 bg-white w-full h-[10vh]">
 
-          {error && (
-            <div className="flex items-center gap-2 text-red-600 bg-red-100 border border-red-300 rounded p-2">
-              <AlertTriangle size={18} />
-              <span>{error}</span>
-            </div>
-          )}
-
-          <div className="relative flex items-center gap-2">
-            <KeyRound className="absolute left-3 top-2.5 text-gray-500" size={18} />
-            <input
-              type="password"
-              placeholder="Code de vérification"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="w-full pl-9 p-2 border rounded"
-            />
-            <button
-              onClick={verifyCode}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+        <button onClick={() => navigate(-1)}
+          className="fixed top-4 left-4 z-50 bg-[rgba(221,133,2,0.773)] p-2 rounded-full  text-black"
+          title="Retour"
             >
-              Vérifier
+            <ArrowLeft size={20} />
+        </button>  
+        <div className="flex items-center justify-center px-4 pt-1">
+            
+        {loading && <SaveSongLoader />}
+
+        <h2 className="text-xl font-bold text-center">Ajouter une chanson</h2>
+        </div>
+
+        </div>
+
+      {loading && <SaveSongLoader />}
+
+      <div className="p-4 pt-[11vh] space-y-4 pb-18">
+
+
+      <div className="relative">
+        <Music2 className="absolute left-3 top-2.5 text-gray-500" size={18} />
+        <input
+          type="text"
+          placeholder="Titre"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full pl-9 p-2 border rounded"
+        />
+      </div>
+
+      <div className="relative">
+        <User className="absolute left-3 top-2.5 text-gray-500" size={18} />
+        <input
+          type="text"
+          placeholder="Auteur"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          className="w-full pl-9 p-2 border rounded"
+        />
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={() => addLyricsBlock("couplet")}
+          className="flex items-center gap-2 border border-green-600 text-green-600 px-4 py-2 rounded hover:bg-green-50"
+        >
+          <PlusCircle size={18} />
+          Couplet
+        </button>
+        <button
+          onClick={() => addLyricsBlock("refrain")}
+          className="flex items-center gap-2 border border-purple-600 text-purple-600 px-4 py-2 rounded hover:bg-purple-50"
+        >
+          <PlusCircle size={18} />
+          Refrain
+        </button>
+      </div>
+
+      {lyrics.map((block) => (
+        <div key={block.id} className="border p-3 rounded relative bg-gray-50">
+          <div className="flex justify-between items-center mb-2">
+            <span className="font-bold">{block.type.toUpperCase()}</span>
+            <button onClick={() => removeLyricsBlock(block.id)} title="Supprimer">
+              <Trash2 size={18} className="text-red-500" />
             </button>
           </div>
-        </>
+          <textarea
+            value={block.text}
+            onChange={(e) => updateLyricsText(block.id, e.target.value)}
+            className="w-full p-2 border rounded"
+            rows={3}
+            placeholder={`Écris le ${block.type}`}
+          />
+        </div>
+      ))}
+
+      {lyrics.length > 0 && (
+        <button
+          onClick={handleSubmit}
+          className="flex items-center gap-2 border border-black text-black px-4 py-2 rounded hover:bg-gray-100"
+        >
+          <Save size={18} />
+          Ajouter la chanson
+        </button>
       )}
 
-      {/* 🎵 Formulaire complet après vérification */}
-      {isVerified && (
-        <>
-          {/* Titre */}
-          <div className="relative">
-            <Music2 className="absolute left-3 top-2.5 text-gray-500" size={18} />
-            <input
-              type="text"
-              placeholder="Titre "
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full pl-9 p-2 border rounded"
-            />
-          </div>
-
-          {/* Auteur */}
-          <div className="relative">
-            <User className="absolute left-3 top-2.5 text-gray-500" size={18} />
-            <input
-              type="text"
-              placeholder="Auteur"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="w-full pl-9 p-2 border rounded"
-            />
-          </div>
-
-          {/* Ajouter couplet / refrain */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => addLyricsBlock("couplet")}
-              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded"
-            >
-              <PlusCircle size={18} />
-              Couplet
-            </button>
-            <button
-              onClick={() => addLyricsBlock("refrain")}
-              className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded"
-            >
-              <PlusCircle size={18} />
-              Refrain
-            </button>
-          </div>
-
-          {/* Blocs de lyrics */}
-          {lyrics.map((block) => (
-            <div key={block.id} className="border p-3 rounded relative bg-gray-50">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-bold">{block.type.toUpperCase()}</span>
-                <button
-                  onClick={() => removeLyricsBlock(block.id)}
-                  title="Supprimer"
-                >
-                  <Trash2 size={18} className="text-red-500" />
-                </button>
-              </div>
-              <textarea
-                value={block.text}
-                onChange={(e) => updateLyricsText(block.id, e.target.value)}
-                className="w-full p-2 border rounded"
-                rows={3}
-                placeholder={`Écris le ${block.type}`}
-              />
-            </div>
-          ))}
-
-          {/* Bouton de soumission */}
-          {lyrics.length > 0 && (
-            <button
-              onClick={handleSubmit}
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded"
-            >
-              <Save size={18} />
-              Ajouter la chanson
-            </button>
-          )}
-        </>
-      )}
+      {error && <div className="text-red-600">{error}</div>}
     </div>
+
+    </div>
+
   );
 };
 

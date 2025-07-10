@@ -72,13 +72,14 @@ const handleNewChat = () => {
      <header className="z-50000 w-full bg-[#121212] fixed px-6 py-4 border-b border-gray-800 flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 <div className="text-xl font-semibold flex items-center">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="fixed top-4 left-4 z-50 bg-white p-2 rounded-full  text-black"
-                    title="Retour"
-                  >
-                    <ArrowLeft size={20} />
-                  </button>                </div>
+                  <button
+                      onClick={() => navigate(-1)}
+                      className="fixed top-4 left-4 z-50 bg-white p-2 rounded-full  text-black"
+                      title="Retour"
+                    >
+                      <ArrowLeft size={20} />
+                    </button>                
+                  </div>
               </div>
               <div className="flex items-center space-x-3">
                 <RiChatNewLine onClick={handleNewChat} className='p-2 w-10 h-10 rounded-full cursor-pointer hover:bg-gray-800'/>

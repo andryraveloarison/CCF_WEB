@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, Search } from 'lucide-react';
-import ReloadButton from '../components/ReloadButton';
-import { getSongsFromApi, getSongsFromCache } from "../services/song/ManageSong";
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { ArrowLeft,  PlusCircle, Search } from 'lucide-react';
+import {  getSongsFromCache } from "../services/song/ManageSong";
 
 type Song = {
   id: string;
@@ -10,10 +9,11 @@ type Song = {
   lyrics: string;
 };
 
-const SongList = () => {
+const ManageSong = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
 
+  const navigate = useNavigate()
   // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
     getSongsFromCache().then((data) => {
@@ -25,11 +25,6 @@ const SongList = () => {
   }, []);
   
 
-  // 🔽 Requête manuelle via bouton
-  const fetchFromApi = async () => {
-    const data = await getSongsFromApi();
-    setSongs(data);
-  };
   
 
   const sortedSongs = [...songs].sort((a, b) =>
@@ -44,10 +39,31 @@ const SongList = () => {
     <>
 
       {/* Header */}
-      <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white rounded-bl-[30px]">
-        <div className="flex items-center justify-between px-4 pt-6">
-        <Menu className="cursor-pointer" />
-        <ReloadButton onReload={fetchFromApi} />
+      <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white rounded-bl-[30px] rounded-br-[30px]">
+        <div className="flex items-center justify-end px-4 pt-6">
+            <button onClick={() => navigate(-1)}
+          className="fixed top-4 left-4 z-50 bg-[rgba(221,133,2,0.773)] p-2 rounded-full  text-black"
+          title="Retour"
+            >
+            <ArrowLeft size={20} />
+        </button>   
+        <div>
+
+        <NavLink 
+                to="/addSong" 
+                className={({ isActive }) => 
+                `transition duration-200 ${
+                    isActive 
+                    ? 'text-[rgba(221,133,2,0.973)]' 
+                    : 'text-white opacity-80'
+                } hover:text-[rgba(221,133,2,0.973)]`
+                }
+            >
+        <PlusCircle size={26} onClick={() => navigate("/addSong")}/>
+      </NavLink>        
+      
+      </div>
+
         </div>
 
         <div className="px-4 mt-4">
@@ -68,7 +84,7 @@ const SongList = () => {
 
       {/* Liste */}
       <div className="fixed top-[20vh] bg-black">
-        <div className="rounded-tr-[30px] w-full pt-5 left-0 w-screen bg-white text-gray-800 pb-20 h-[calc(100vh-100px)]">
+        <div className=" w-full pt-5 left-0 w-screen bg-white text-gray-800 pb-20 h-[calc(100vh-100px)]">
           <h2 className="text-xl font-bold mb-2 px-5">Liste des chants</h2>
           <div>
             <div
@@ -77,7 +93,7 @@ const SongList = () => {
             >
               {filteredSongs.map((song, index) => (
                 <Link
-                  to={`/lyrics/${song.id}`}
+                  to={`/song/edit/${song.id}`}
                   key={song.id}
                   className="rounded-xl p-3 border border-gray-300 flex items-center justify-between hover:bg-gray-100"
                 >
@@ -96,4 +112,4 @@ const SongList = () => {
   );
 };
 
-export default SongList;
+export default ManageSong;
