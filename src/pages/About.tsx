@@ -14,7 +14,7 @@ const About = () => {
             <ArrowLeft size={24} />
           </button>
 
-          <ReloadButton/>
+          <ReloadButton />
 
         </div>
 

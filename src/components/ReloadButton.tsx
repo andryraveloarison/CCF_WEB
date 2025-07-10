@@ -2,14 +2,14 @@ import { useState } from "react";
 import { RefreshCcw, Loader2 } from "lucide-react";
 
 type Props = {
-  onReload: () => void;
+  onReload?: () => void | null;
 };
 
 const ReloadButton = ({ onReload }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleReload = () => {
-    onReload()
+    onReload && onReload()
     setLoading(true);
     setTimeout(() => {
       window.location.reload(); // ou autre action
