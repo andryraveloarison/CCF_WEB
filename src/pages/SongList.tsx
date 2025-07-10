@@ -13,27 +13,30 @@ const SongList = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
 
+  // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const res = await fetch("https://hayback.onrender.com/api/song/getAll", {
-          mode: 'cors'
-        });
-        const data = await res.json();
-        setSongs(data);
-      } catch (error) {
-        console.warn("Erreur de récupération des chants (offline ?) :", error);
+    caches.match("https://hayback.onrender.com/api/song/getAll").then((res) => {
+      if (res) {
+        res.json().then((data) => setSongs(data));
+      } else {
+        console.log("Pas de cache trouvé pour les chansons");
       }
-    };
-    
-
-    fetchSongs();
+    });
 
     const container = document.getElementById('main-scroll');
-    if (container) {
-      container.scrollTo(0, 0);
-    }
+    if (container) container.scrollTo(0, 0);
   }, []);
+
+  // 🔽 Requête manuelle via bouton
+  const fetchFromApi = async () => {
+    try {
+      const res = await fetch("https://hayback.onrender.com/api/song/getAll", { mode: "cors" });
+      const data = await res.json();
+      setSongs(data);
+    } catch (err) {
+      console.error("Erreur de récupération : ", err);
+    }
+  };
 
   const sortedSongs = [...songs].sort((a, b) =>
     a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
@@ -45,12 +48,13 @@ const SongList = () => {
 
   return (
     <>
-      {/* 🔲 Barre du haut fixe */}
+      {/* Header */}
       <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white rounded-bl-[30px]">
         <div className="flex items-center justify-between px-4 pt-6">
           <Menu size={24} />
-          <ReloadButton />
+          <ReloadButton onReload={fetchFromApi} />
         </div>
+
         <div className="px-4 mt-4">
           <div className="flex items-center bg-white text-black rounded-[12px] px-4 py-2">
             <input
@@ -65,7 +69,7 @@ const SongList = () => {
         </div>
       </div>
 
-      {/* 🔲 Zone de scroll sous le header */}
+      {/* Liste */}
       <div className="fixed top-[20vh] bg-black">
         <div className="rounded-tr-[30px] w-full pt-5 left-0 w-screen bg-white text-gray-800 pb-20 h-[calc(100vh-100px)]">
           <h2 className="text-xl font-bold mb-2 px-5">Liste des chants</h2>

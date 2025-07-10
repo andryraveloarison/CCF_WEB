@@ -1,6 +1,5 @@
-import { useParams,  useNavigate } from 'react-router-dom';
-import lyricsData from '../data/lyrics.json';
-import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 interface Song {
@@ -11,18 +10,42 @@ interface Song {
 
 const Lyrics = () => {
   const { id } = useParams<{ id: string }>();
-  const song = (lyricsData as Song[]).find(s => s.id === id);
   const navigate = useNavigate();
+  const [song, setSong] = useState<Song | null>(null);
 
-  
   useEffect(() => {
+    const fetchLyrics = async () => {
+      try {
+        // 🔍 Tente d'abord de charger depuis le cache (Service Worker)
+        const cached = await caches.match("https://hayback.onrender.com/api/song/getAll");
+        if (cached) {
+          const data: Song[] = await cached.json();
+          const found = data.find((s) => s.id === id);
+          if (found) {
+            setSong(found);
+            return;
+          }
+        }
+
+        // 🌐 Sinon, tente de récupérer depuis l'API
+        const res = await fetch("https://hayback.onrender.com/api/song/getAll");
+        const data: Song[] = await res.json();
+        const found = data.find((s) => s.id === id);
+        if (found) setSong(found);
+      } catch (error) {
+        console.error("Impossible de charger les paroles :", error);
+      }
+    };
+
+    fetchLyrics();
+
     const container = document.getElementById('lyrics-scroll');
     container?.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   if (!song) {
     return (
-      <div className="p-4 min-h-screen">
+      <div className="p-4 min-h-screen bg-white text-gray-800">
         <h2 className="text-xl font-bold">Chant non trouvé</h2>
       </div>
     );
