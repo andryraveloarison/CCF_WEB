@@ -31,7 +31,7 @@ const BottomNav = () => {
         <Info size={24} />
       </NavLink>
 
-      <NavLink 
+      {/* <NavLink 
         to="/chat" 
         className={({ isActive }) => 
           `transition duration-200 ${
@@ -42,7 +42,7 @@ const BottomNav = () => {
         }
       >
         <MessageCircle size={24} />
-      </NavLink>
+      </NavLink> */}
     </nav>
   );
 };
