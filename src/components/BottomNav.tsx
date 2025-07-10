@@ -1,6 +1,6 @@
 // components/BottomNav.tsx
 import { NavLink } from 'react-router-dom';
-import { Music, Info, MessageCircle } from 'lucide-react';
+import { Music, Info } from 'lucide-react';
 
 const BottomNav = () => {
   return (
