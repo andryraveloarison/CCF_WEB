@@ -4,6 +4,7 @@ import Chat from './pages/Chat';
 import Songs from './pages/SongList';
 import Lyrics from './pages/Lyrics';
 import About from './pages/About';
+import AddSong from './pages/AddSong';
 import BottomNav from './components/BottomNav';
 
 const AppLayout = () => {
@@ -18,6 +19,7 @@ const AppLayout = () => {
           <Route path="/lyrics/:id" element={<Lyrics />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/about" element={<About />} />
+          <Route path="/addSong" element={<AddSong />} />
         </Routes>
       </div>
       {!hideBottomNav && <BottomNav />}

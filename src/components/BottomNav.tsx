@@ -1,6 +1,6 @@
 // components/BottomNav.tsx
 import { NavLink } from 'react-router-dom';
-import { Music, Info } from 'lucide-react';
+import { Music, Info, PlusCircle } from 'lucide-react';
 
 const BottomNav = () => {
   return (
@@ -16,6 +16,19 @@ const BottomNav = () => {
         }
       >
         <Music size={24} />
+      </NavLink>
+
+      <NavLink 
+        to="/addSong" 
+        className={({ isActive }) => 
+          `transition duration-200 ${
+            isActive 
+              ? 'text-[rgba(221,133,2,0.973)]' 
+              : 'text-white opacity-80'
+          } hover:text-[rgba(221,133,2,0.973)]`
+        }
+      >
+        <PlusCircle size={24} />
       </NavLink>
 
       <NavLink 
@@ -43,6 +56,9 @@ const BottomNav = () => {
       >
         <MessageCircle size={24} />
       </NavLink> */}
+
+    
+
     </nav>
   );
 };
