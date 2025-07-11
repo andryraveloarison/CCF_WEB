@@ -26,7 +26,6 @@ const EditSong = () => {
   const [author, setAuthor] = useState("");
   const [lyrics, setLyrics] = useState<LyricsBlock[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   // 🧠 Convertir HTML <br>, <b> en blocs
   const parseLyricsToBlocks = (lyricsHTML: string): LyricsBlock[] => {
