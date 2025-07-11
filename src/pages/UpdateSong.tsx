@@ -244,7 +244,6 @@ const EditSong = () => {
         </button>
       </div>
 
-      {error && <div className="text-red-600">{error}</div>}
     </div>
     </div>
 

@@ -11,7 +11,7 @@ const Verification = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState("");
 
-  const VALID_CODE = "1234";  
+  const VALID_CODE = "tsyaiko";  
 
   const navigate = useNavigate()
 
@@ -28,15 +28,15 @@ const Verification = () => {
 
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="min-h-screen p-4 pb-[12vh] flex items-center justify-center">
         
       {/* 🔒 Vérification obligatoire */}
       {!isVerified && (
-        <>
-          <div className="flex items-start gap-2 text-blue-700 bg-blue-100 border border-blue-300 rounded p-3">
+        <div className="space-y-4 mx-auto">
+          <div className="flex items-start gap-2 text-black  border border-[rgba(221,133,2,0.773)] rounded p-3">
             <Info size={20} className="mt-0.5" />
             <p>
-              Pour ajouter une chanson, veuillez entrer le code de vérification fourni par l'administrateur.
+              Veuillez entrer le code de vérification pour gerer les chansons
             </p>
           </div>
 
@@ -58,12 +58,12 @@ const Verification = () => {
             />
             <button
               onClick={verifyCode}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+              className="bg-black text-white px-4 py-2 rounded"
             >
               Vérifier
             </button>
           </div>
-        </>
+        </div>
       )}
 
     
