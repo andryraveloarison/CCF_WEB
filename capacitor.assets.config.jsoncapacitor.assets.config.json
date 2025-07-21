@@ -1,0 +1,6 @@
+{
+    "iconPath": "android/app/src/main/assets/public/icon.png",
+    "iconBackgroundColor": "#ffffff",
+    "platforms": ["android"]
+  }
+  

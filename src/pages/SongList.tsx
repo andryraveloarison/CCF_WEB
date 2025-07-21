@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, Search } from 'lucide-react';
+import { Loader2, Menu, Search } from 'lucide-react';
 import ReloadButton from '../components/ReloadButton';
 import { getSongsFromApi, getSongsFromCache } from "../services/song/ManageSong";
 
@@ -13,11 +13,18 @@ type Song = {
 const SongList = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
     getSongsFromCache().then((data) => {
-      if (data) setSongs(data);
+      if (data) {
+        setSongs(data);
+      }else {
+        setLoading(true)
+        fetchFromApi()
+      }
+      
     });
   
     const container = document.getElementById('main-scroll');
@@ -29,6 +36,7 @@ const SongList = () => {
   const fetchFromApi = async () => {
     const data = await getSongsFromApi();
     setSongs(data);
+    setLoading(false)
   };
   
 
@@ -70,6 +78,11 @@ const SongList = () => {
       <div className="fixed top-[20vh] bg-black">
         <div className="rounded-tr-[30px] w-full pt-5 left-0 w-screen bg-white text-gray-800 pb-20 h-[calc(100vh-100px)]">
           <h2 className="text-xl font-bold mb-2 px-5">Liste des chants</h2>
+          {loading ? (
+            <div className="flex items-center justify-center h-[50vh] bg-white">
+            <Loader2 size={60} className="animate-spin text-[rgba(221,133,2,0.973)]" />
+          </div>      
+          ) : (
           <div>
             <div
               id="main-scroll"
@@ -90,6 +103,7 @@ const SongList = () => {
               ))}
             </div>
           </div>
+        )}
         </div>
       </div>
     </>
