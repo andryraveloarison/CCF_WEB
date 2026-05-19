@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Menu, Search } from 'lucide-react';
+import { Download, Loader2, Menu, Search } from 'lucide-react';
 import ReloadButton from '../components/ReloadButton';
 import { getSongsFromApi, getSongsFromCache } from "../services/song/ManageSong";
 
@@ -10,10 +10,24 @@ type Song = {
   lyrics: string;
 };
 
+const APK_URL = "https://github.com/andryraveloarison/CCF_WEB/releases/download/latest-apk/app-debug.apk";
+
 const SongList = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
@@ -54,8 +68,23 @@ const SongList = () => {
       {/* Header */}
       <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white rounded-bl-[30px]">
         <div className="flex items-center justify-between px-4 pt-6">
-        <Menu className="cursor-pointer" />
-        <ReloadButton onReload={fetchFromApi} />
+          <div className="relative" ref={menuRef}>
+            <Menu className="cursor-pointer" onClick={() => setMenuOpen(!menuOpen)} />
+            {menuOpen && (
+              <div className="absolute top-8 left-0 z-50 bg-white rounded-xl shadow-xl overflow-hidden min-w-[200px]">
+                <a
+                  href={APK_URL}
+                  download
+                  className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gray-100 text-sm font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Download size={18} className="text-orange-500" />
+                  Télécharger l'app Android
+                </a>
+              </div>
+            )}
+          </div>
+          <ReloadButton onReload={fetchFromApi} />
         </div>
 
         <div className="px-4 mt-4">
