@@ -52,18 +52,22 @@ jobs:
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
 
+      - name: Copy APK to public/releases
+        run: |
+          mkdir -p public/releases
+          cp android/app/build/outputs/apk/debug/app-debug.apk public/releases/ccf.apk
+
+      - name: Commit updated APK
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/releases/ccf.apk
+          git commit -m "chore: update APK [skip ci]" || echo "No changes to commit"
+          git push
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: ccf-app
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: public/releases/ccf.apk
           retention-days: 90
-
-      - name: Create or update latest release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest-apk
-          name: "Dernière version"
-          body: "APK générée automatiquement depuis le dernier push sur main."
-          files: android/app/build/outputs/apk/debug/app-debug.apk
-          make_latest: true

@@ -10,7 +10,7 @@ type Song = {
   lyrics: string;
 };
 
-const APK_URL = "https://github.com/andryraveloarison/CCF_WEB/releases/download/latest-apk/app-debug.apk";
+const APK_URL = "/releases/ccf.apk";
 
 const SongList = () => {
   const [search, setSearch] = useState("");
