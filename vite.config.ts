@@ -38,6 +38,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        navigateFallbackDenylist: [/^\/releases\//],
         runtimeCaching: [
           {
             // 🔒 Match l’API sur Render
