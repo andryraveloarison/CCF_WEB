@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Loader2, Menu, Search } from 'lucide-react';
+import { Download, Loader2, Menu, Search, SmartphoneNfc } from 'lucide-react';
 import ReloadButton from '../components/ReloadButton';
 import { getSongsFromApi, getSongsFromCache } from "../services/song/ManageSong";
 
@@ -11,6 +11,7 @@ type Song = {
 };
 
 const APK_URL = "/releases/ccf.apk";
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 const SongList = () => {
   const [search, setSearch] = useState("");
@@ -72,15 +73,22 @@ const SongList = () => {
             <Menu className="cursor-pointer" onClick={() => setMenuOpen(!menuOpen)} />
             {menuOpen && (
               <div className="absolute top-8 left-0 z-50 bg-white rounded-xl shadow-xl overflow-hidden min-w-[200px]">
-                <a
-                  href={APK_URL}
-                  download
-                  className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gray-100 text-sm font-medium"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <Download size={18} className="text-orange-500" />
-                  Télécharger l'app Android
-                </a>
+                {isIOS ? (
+                  <div className="flex items-center gap-3 px-4 py-3 text-gray-400 text-sm font-medium">
+                    <SmartphoneNfc size={18} className="text-gray-400" />
+                    App disponible sur Android uniquement
+                  </div>
+                ) : (
+                  <a
+                    href={APK_URL}
+                    download="ccf.apk"
+                    className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gray-100 text-sm font-medium"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Download size={18} className="text-orange-500" />
+                    Télécharger l'app Android
+                  </a>
+                )}
               </div>
             )}
           </div>
