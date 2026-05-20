@@ -13,6 +13,20 @@ type Song = {
 const APK_URL = "/releases/ccf.apk";
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+const downloadApk = async () => {
+  const response = await fetch(APK_URL, { cache: 'no-store' });
+  const blob = await response.blob();
+  const apkBlob = new Blob([blob], { type: 'application/vnd.android.package-archive' });
+  const url = URL.createObjectURL(apkBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ccf.apk';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 const SongList = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
@@ -79,15 +93,13 @@ const SongList = () => {
                     App disponible sur Android uniquement
                   </div>
                 ) : (
-                  <a
-                    href={APK_URL}
-                    download="ccf.apk"
-                    className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gray-100 text-sm font-medium"
-                    onClick={() => setMenuOpen(false)}
+                  <button
+                    className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gray-100 text-sm font-medium w-full text-left"
+                    onClick={() => { setMenuOpen(false); downloadApk(); }}
                   >
                     <Download size={18} className="text-orange-500" />
                     Télécharger l'app Android
-                  </a>
+                  </button>
                 )}
               </div>
             )}
