@@ -37,7 +37,7 @@ const About = () => {
       </header>
 
       {/* ── Contenu ────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-6 pt-8 pb-32">
+      <div className="flex-1 overflow-y-auto px-6 pt-8 pb-8">
         <span className="eyebrow">Présentation</span>
         <p className="mt-4 text-[15px] leading-relaxed">
           CCF est une application dédiée aux membres du Chœur du Christ en
@@ -63,12 +63,13 @@ const About = () => {
             <div className="dotgrid h-16 w-24" />
           </div>
         </div>
-
-        <div className="mt-10 border-t border-[var(--hairline)] pt-4 flex items-center justify-between">
-          <span className="eyebrow">Made with 🖤</span>
-          <span className="eyebrow">CCF</span>
-        </div>
       </div>
+
+      {/* ── Footer — ancré en bas de page ──────────────────── */}
+      <footer className="shrink-0 px-6 pb-8 pt-4 border-t border-[var(--hairline)] flex items-center justify-between">
+        <span className="eyebrow">Made with 🖤</span>
+        <span className="eyebrow">CCF</span>
+      </footer>
     </div>
   );
 };

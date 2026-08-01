@@ -73,30 +73,44 @@ Réponds STRICTEMENT en JSON, sans texte autour, au format :
 {"passage":"<le texte du passage biblique demandé ; s'il est long, un résumé en une ou deux phrases>","songs":[{"id":"<id du chant>","title":"<titre exact>","reason":"<une phrase expliquant le lien avec le passage>"}]}
 N'invente aucun chant hors du répertoire.`;
 
-  const ollama = await fetch(`${HOST}/api/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      stream: false,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: `Verset / thème : ${v}` },
-      ],
-    }),
-  });
+  let ollama;
+  try {
+    ollama = await fetch(`${HOST}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        stream: false,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Verset / thème : ${v}` },
+        ],
+      }),
+    });
+  } catch {
+    throw httpError(502, "Une erreur de connexion. Réessaie plus tard.");
+  }
 
-  if (!ollama.ok)
-    throw httpError(502, `Erreur Ollama : ${ollama.status} ${ollama.statusText}`);
+  if (!ollama.ok) {
+    if (ollama.status === 429)
+      throw httpError(429, "Une erreur de connexion. Réessaie plus tard.");
+    if (ollama.status === 401 || ollama.status === 403)
+      throw httpError(502, "Une erreur de connexion");
+    throw httpError(502, "Une erreur de connexion. Réessaie plus tard.");
+  }
 
-  const data = await ollama.json();
-  const content =
-    data?.message?.content ?? data?.choices?.[0]?.message?.content ?? "";
-
-  const parsed = extractJson(content);
+  let parsed;
+  try {
+    const data = await ollama.json();
+    const content =
+      data?.message?.content ?? data?.choices?.[0]?.message?.content ?? "";
+    parsed = extractJson(content);
+  } catch {
+    throw httpError(502, "Une erreur de connexion. Réessaie plus tard.");
+  }
   const raw = Array.isArray(parsed.songs) ? parsed.songs : [];
 
   const songs = raw.map((s) => ({

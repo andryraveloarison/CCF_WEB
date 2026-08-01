@@ -111,14 +111,6 @@ const Verse = () => {
       <header className="px-6 pt-8 shrink-0">
         <TopBar />
 
-        <div className="mt-6 flex items-center justify-between">
-          <span className="eyebrow">Assistant IA</span>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-            <span className="eyebrow">Verset → Chants</span>
-          </div>
-        </div>
-
         <h1 className="mt-6 text-4xl font-semibold tracking-tight leading-none">
           Trouver un chant
         </h1>

@@ -20,20 +20,52 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 export const suggestSongsFromVerse = async (
   verse: string
 ): Promise<VerseResult> => {
-  const res = await fetch(`${API_BASE}/api/verse`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ verse }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Erreur ${res.status}`);
+  // Pas de réseau → message clair, on n'appelle même pas l'API
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    throw new Error("Erreur de connexion. Vérifie ta connexion internet.");
   }
 
-  const data = await res.json();
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/api/verse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ verse }),
+    });
+  } catch {
+    // fetch échoue (hors-ligne, DNS, CORS…)
+    throw new Error("Erreur de connexion. Vérifie ta connexion internet.");
+  }
+
+  // On lit d'abord en texte : la réponse peut ne PAS être du JSON
+  // (page HTML d'erreur, API non déployée, fallback hors-ligne…)
+  const rawBody = await res.text();
+  let data: { error?: string; passage?: string; songs?: SongSuggestion[] } | null =
+    null;
+  try {
+    data = rawBody ? JSON.parse(rawBody) : null;
+  } catch {
+    data = null; // corps non-JSON (ex. "<!doctype html>…")
+  }
+
+  if (!res.ok) {
+    if (data?.error) throw new Error(data.error);
+    if (res.status === 429)
+      throw new Error("Quota IA épuisé. Réessaie plus tard.");
+    if (res.status === 401 || res.status === 403)
+      throw new Error("Accès à l'IA refusé (clé invalide).");
+    if (res.status >= 500)
+      throw new Error("Service IA indisponible. Réessaie plus tard.");
+    throw new Error(`Erreur ${res.status}. Réessaie plus tard.`);
+  }
+
+  if (!data) {
+    // Réponse OK mais illisible (HTML au lieu de JSON)
+    throw new Error("Service IA momentanément indisponible. Réessaie plus tard.");
+  }
+
   return {
     passage: typeof data.passage === "string" ? data.passage : "",
-    songs: Array.isArray(data.songs) ? (data.songs as SongSuggestion[]) : [],
+    songs: Array.isArray(data.songs) ? data.songs : [],
   };
 };
