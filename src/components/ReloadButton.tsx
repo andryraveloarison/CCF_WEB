@@ -24,9 +24,9 @@ const ReloadButton = ({ onReload }: Props) => {
       title="Actualiser"
     >
       {loading ? (
-        <Loader2 size={24} className="animate-spin text-[rgba(221,133,2,0.973)]" />
+        <Loader2 size={18} strokeWidth={1.5} className="animate-spin text-[var(--ink)]" />
       ) : (
-        <RefreshCcw size={24} />
+        <RefreshCcw size={18} strokeWidth={1.5} className="text-[var(--ink)]" />
       )}
     </button>
   );

@@ -1,64 +1,42 @@
 // components/BottomNav.tsx
 import { NavLink } from 'react-router-dom';
-import { Music, Info, PlusCircle } from 'lucide-react';
+
+const items = [
+  { to: '/', label: 'Chants' },
+  { to: '/ia', label: 'Assistant' },
+  { to: '/Verify', label: 'Ajouter' },
+  { to: '/about', label: 'À propos' },
+];
 
 const BottomNav = () => {
   return (
-    <nav className="min-h-[50px] pb-5 mx-4 rounded-tl-[20px] rounded-tr-[20px] fixed bottom-0 left-0 right-0 bg-black border-t  flex justify-around items-center py-3 md:hidden z-50">
-      <NavLink 
-        to="/" 
-        className={({ isActive }) => 
-          `transition duration-200 ${
-            isActive 
-              ? 'text-[rgba(221,133,2,0.973)]' 
-              : 'text-white opacity-80'
-          } hover:text-[rgba(221,133,2,0.973)]`
-        }
-      >
-        <Music size={24} />
-      </NavLink>
-
-      <NavLink 
-        to="/Verify" 
-        className={({ isActive }) => 
-          `transition duration-200 ${
-            isActive 
-              ? 'text-[rgba(221,133,2,0.973)]' 
-              : 'text-white opacity-80'
-          } hover:text-[rgba(221,133,2,0.973)]`
-        }
-      >
-        <PlusCircle size={24} />
-      </NavLink>
-
-      <NavLink 
-        to="/about" 
-        className={({ isActive }) => 
-          `transition duration-200 ${
-            isActive 
-              ? 'text-[rgba(221,133,2,0.973)]' 
-              : 'text-white opacity-80'
-          } hover:text-[rgba(221,133,2,0.973)]`
-        }
-      >
-        <Info size={24} />
-      </NavLink>
-
-      {/* <NavLink 
-        to="/chat" 
-        className={({ isActive }) => 
-          `transition duration-200 ${
-            isActive 
-              ? 'text-[rgba(221,133,2,0.973)]' 
-              : 'text-white opacity-80'
-          } hover:text-[rgba(221,133,2,0.973)]`
-        }
-      >
-        <MessageCircle size={24} />
-      </NavLink> */}
-
-    
-
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--paper)] border-t border-[var(--hairline)] md:hidden">
+      <div className="flex justify-around items-center px-6 pt-4 pb-6">
+        {items.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className="flex flex-col items-center gap-2 group"
+          >
+            {({ isActive }) => (
+              <>
+                <span
+                  className={`h-2 w-2 rounded-full transition-colors ${
+                    isActive ? 'bg-[var(--accent)]' : 'bg-transparent border border-[var(--ink-soft)]'
+                  }`}
+                />
+                <span
+                  className={`eyebrow transition-colors ${
+                    isActive ? 'text-[var(--ink)]' : 'text-[var(--ink-soft)]'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </>
+            )}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   );
 };

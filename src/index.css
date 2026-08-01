@@ -1,30 +1,77 @@
 @import "tailwindcss";
 
-/* Scrollbar track (fond) */
-::-webkit-scrollbar {
-    width: 3px; /* largeur scrollbar */
-    height: 3px; /* hauteur scrollbar horizontale si besoin */
-  }
-  
-  /* Scrollbar thumb (partie que l'on fait glisser) */
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(221, 133, 2, 0.973); /* couleur violet/indigo par exemple */
-    border-radius: 10px;
-  }
-  
-  /* Scrollbar track background */
-  ::-webkit-scrollbar-track {
-    background: #ffffff; /* fond plus sombre */
-    z-index: 999999;
+/* ============================================================
+   Editorial / Swiss design system
+   Warm off-white canvas, pure black ink, neo-grotesque type.
+   ============================================================ */
 
-  }
-  
-  body {
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  #root {
-    height: 100%;
-    overflow: auto;
-  }
+:root {
+  --paper: #efeeec;      /* warm off-white canvas */
+  --paper-2: #e6e4e1;    /* card / recessed surface */
+  --ink: #111111;        /* near-black text */
+  --ink-soft: #6b6b68;   /* secondary text */
+  --hairline: #d4d2ce;   /* thin dividers */
+  --accent: #dd8502;     /* single amber accent (active dot) */
+}
+
+html,
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, "Inter", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  overflow: auto;
+  background-color: var(--paper);
+}
+
+/* Uppercase tracked micro-labels used across the app */
+.eyebrow {
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+/* Large display numerals (Swiss editorial) */
+.display {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+
+/* Thin full-bleed rule */
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* Dotted-grid decoration (card accent) */
+.dotgrid {
+  background-image: radial-gradient(var(--ink-soft) 1px, transparent 1px);
+  background-size: 9px 9px;
+  opacity: 0.55;
+}
+
+/* Scrollbar — minimal, ink coloured */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--ink);
+  border-radius: 0;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

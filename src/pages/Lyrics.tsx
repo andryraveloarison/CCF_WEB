@@ -45,44 +45,54 @@ const Lyrics = () => {
 
   if (!song) {
     return (
-      <div className="p-4 min-h-screen bg-white text-gray-800">
-        <h2 className="text-xl font-bold">Chant non trouvé</h2>
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--paper)] text-[var(--ink)]">
+        <span className="eyebrow mb-2">Introuvable</span>
+        <h2 className="text-xl font-semibold">Chant non trouvé</h2>
       </div>
     );
   }
 
   return (
-    <div className="relative bg-white text-gray-800 min-h-screen">
+    <div className="fixed inset-0 flex flex-col bg-[var(--paper)] text-[var(--ink)]">
 
-      
-      {/* 🔙 Bouton retour */}
-      <button
-        onClick={() => navigate(-1)}
-        className="fixed top-4 left-4 z-50 bg-[rgba(221,133,2,0.773)] p-2 rounded-full  text-black"
-        title="Retour"
-      >
-        <ArrowLeft size={20} />
-      </button>
+      {/* ── Header ─────────────────────────────────────────── */}
+      <header className="px-6 pt-8 shrink-0">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-[var(--ink)]"
+            title="Retour"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--paper)]">
+              <ArrowLeft size={16} strokeWidth={2} />
+            </span>
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+            <span className="eyebrow">Paroles</span>
+          </div>
+        </div>
 
-      <div className="fixed top-0 left-0 right-0 z-40 pt-5 pb-5  mb-10 text-center text-black">
-        <h2 className="text-xl font-bold px-15">{song.title}</h2>
-        <div className="mt-5  px-15 border-b-2 border-black w-[75vw] mx-auto"></div>
-  {/* 🧾 Paroles scrollables */}
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight leading-tight">
+          {song.title}
+        </h1>
+        {/* Rule with amber accent segment */}
+        <div className="mt-6 flex items-center">
+          <span className="h-px w-10 bg-[var(--accent)]" />
+          <span className="h-px flex-1 bg-[var(--ink)]" />
+        </div>
+      </header>
+
+      {/* ── Paroles ────────────────────────────────────────── */}
       <div
         id="lyrics-scroll"
-        className=" w-full mt-5 px-4 pb-20 h-screen pb-10 overflow-y-auto"
+        className="flex-1 overflow-y-auto px-6 pt-6 pb-40"
       >
         <div
-          className="text-base pb-50 leading-relaxed space-y-4"
+          className="text-[15px] leading-relaxed space-y-4 [&_*]:!text-[var(--ink)]"
           dangerouslySetInnerHTML={{ __html: song.lyrics }}
         />
       </div>
-      </div>
-
-
-
-
-    
     </div>
   );
 };

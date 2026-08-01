@@ -6,47 +6,67 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed flex flex-col">
-      {/* 🔲 Barre du haut fixe */}
-      <div className="top-0 left-0 h-[40vh] right-0 z-50 bg-black text-white rounded-br-[30px] rounded-bl-[30px] flex flex-col">
-        <div className="flex items-center justify-between px-4 pt-6">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} />
+    <div className="fixed inset-0 flex flex-col bg-[var(--paper)] text-[var(--ink)]">
+
+      {/* ── Header ─────────────────────────────────────────── */}
+      <header className="px-6 pt-8 shrink-0">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--paper)]"
+          >
+            <ArrowLeft size={16} strokeWidth={2} />
           </button>
-
           <ReloadButton />
-
         </div>
 
-        <div className="flex-1 flex items-center justify-center">
+        <div className="mt-6 flex items-end justify-between">
+          <div>
+            <span className="eyebrow">À propos</span>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight leading-none">
+              CCF
+            </h1>
+          </div>
           <img
             src="/logo.png"
             alt="Logo"
-            className="w-[150px] h-auto object-contain mt-[-60px]"
+            className="w-[72px] h-auto object-contain"
           />
         </div>
+        <div className="mt-6 border-t border-[var(--ink)]" />
+      </header>
 
-        <div className="fixed top-[calc(40vh-20px)] left-1/2 -translate-x-1/2 text-center text-white rounded-[1px] w-[260px] shadow-lg">
-          <h2 className="bg-white text-black px-4 py-2 text-sm rounded-[5px]">
-            À propos de l'application
-          </h2>
-        </div>
-      </div>
+      {/* ── Contenu ────────────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto px-6 pt-8 pb-32">
+        <span className="eyebrow">Présentation</span>
+        <p className="mt-4 text-[15px] leading-relaxed">
+          CCF est une application dédiée aux membres du Chœur du Christ en
+          Famille.
+        </p>
+        <p className="mt-4 text-[15px] leading-relaxed">
+          Elle permet d'afficher les paroles des chants utilisés lors des
+          cultes, des répétitions ou des événements spéciaux.
+        </p>
 
-      <div className="h-[calc(100vh-40vh-2.5rem)] w-screen overflow-hidden flex flex-col justify-between mt-10 bg-white text-gray-800 px-4">
-        <div className="flex-grow h-[calc(100vh-25rem)] flex items-start justify-center">
-          <div className="text-center">
-            <p className="text-l mb-4">
-              CCF est une application dédiée aux membres du Chœur du Christ en Famille.
+        {/* Carte décorative — dotted grid */}
+        <div className="mt-10 border border-[var(--hairline)] bg-[var(--paper-2)]">
+          <div className="flex items-center justify-between px-5 pt-5">
+            <span className="eyebrow">Chœur du Christ en Famille</span>
+            <span className="eyebrow">01</span>
+          </div>
+          <div className="flex items-center justify-between px-5 pb-5 pt-6">
+            <p className="text-[15px] leading-snug max-w-[55%]">
+              Chanter ensemble,
+              <br />
+              en famille.
             </p>
-            <p className="text-l">
-              Elle permet d'afficher les paroles des chants utilisés lors des cultes, des répétitions ou des événements spéciaux.
-            </p>
+            <div className="dotgrid h-16 w-24" />
           </div>
         </div>
 
-        <div className="text-center text-sm text-gray-500 pb-4">
-          Made with 🖤
+        <div className="mt-10 border-t border-[var(--hairline)] pt-4 flex items-center justify-between">
+          <span className="eyebrow">Made with 🖤</span>
+          <span className="eyebrow">CCF</span>
         </div>
       </div>
     </div>

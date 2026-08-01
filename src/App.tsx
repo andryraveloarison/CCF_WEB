@@ -9,6 +9,7 @@ import BottomNav from './components/BottomNav';
 import ManageSong from './pages/ManageSong';
 import Verification from './pages/Verification';
 import EditSong from './pages/UpdateSong';
+import Verse from './pages/Verse';
 
 const AppLayout = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const AppLayout = () => {
       <div className="h-[80vh]">
         <Routes>
           <Route path="/" element={<Songs />} />
+          <Route path="/ia" element={<Verse />} />
           <Route path="/lyrics/:id" element={<Lyrics />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/about" element={<About />} />

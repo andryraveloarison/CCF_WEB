@@ -28,45 +28,52 @@ const Verification = () => {
 
 
   return (
-    <div className="min-h-screen p-4 pb-[12vh] flex items-center justify-center">
-        
+    <div className="fixed inset-0 flex flex-col justify-center bg-[var(--paper)] text-[var(--ink)] px-6 pb-[14vh]">
+
       {/* 🔒 Vérification obligatoire */}
       {!isVerified && (
-        <div className="space-y-4 mx-auto">
-          <div className="flex items-start gap-2 text-black  border border-[rgba(221,133,2,0.773)] rounded p-3">
-            <Info size={20} className="mt-0.5" />
-            <p>
-              Veuillez entrer le code de vérification pour gerer les chansons
+        <div className="w-full max-w-sm mx-auto">
+          <span className="eyebrow">Accès restreint</span>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight leading-none">
+            Gestion
+          </h1>
+          <div className="mt-6 border-t border-[var(--ink)]" />
+
+          <div className="mt-6 flex items-start gap-3 text-[var(--ink-soft)]">
+            <Info size={16} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+            <p className="text-[13px] leading-relaxed">
+              Veuillez entrer le code de vérification pour gérer les chansons.
             </p>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 bg-red-100 border border-red-300 rounded p-2">
-              <AlertTriangle size={18} />
-              <span>{error}</span>
+            <div className="mt-4 flex items-center gap-2 text-red-600">
+              <AlertTriangle size={16} strokeWidth={1.5} />
+              <span className="text-[13px]">{error}</span>
             </div>
           )}
 
-          <div className="relative flex items-center gap-2">
-            <KeyRound className="absolute left-3 top-2.5 text-gray-500" size={18} />
+          <div className="mt-8 flex items-center gap-3 border-b border-[var(--hairline)] pb-2">
+            <KeyRound className="text-[var(--ink-soft)]" strokeWidth={1.5} size={16} />
             <input
               type="password"
               placeholder="Code de vérification"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full pl-9 p-2 border rounded"
+              onKeyDown={(e) => e.key === 'Enter' && verifyCode()}
+              className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--ink-soft)]"
             />
-            <button
-              onClick={verifyCode}
-              className="bg-black text-white px-4 py-2 rounded"
-            >
-              Vérifier
-            </button>
           </div>
+
+          <button
+            onClick={verifyCode}
+            className="mt-8 w-full bg-[var(--ink)] text-[var(--paper)] py-3 text-xs uppercase tracking-[0.18em]"
+          >
+            Vérifier
+          </button>
         </div>
       )}
 
-    
     </div>
   );
 };

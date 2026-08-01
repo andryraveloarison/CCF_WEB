@@ -16,7 +16,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!releases/).*)",
+      "source": "/((?!releases/|api/).*)",
       "destination": "/index.html"
     }
   ]
