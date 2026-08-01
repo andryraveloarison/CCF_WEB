@@ -9,9 +9,18 @@ export interface VerseResult {
   songs: SongSuggestion[];
 }
 
-// Base API : vide (chemin relatif) sur le web Vercel ; pour l'app native
-// Capacitor, définir VITE_API_BASE = https://<ton-domaine-vercel>
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+import { Capacitor } from "@capacitor/core";
+
+// Base API :
+// - Web (Vercel/localhost) : chemin relatif "" → /api/verse est servi par le
+//   serveur qui a rendu la page (fonction Vercel ou middleware Vite en dev).
+// - App native (Capacitor) : le bundle est servi depuis l'appareil, donc un
+//   chemin relatif pointerait vers le téléphone (pas de backend). On force
+//   donc l'URL absolue du déploiement Vercel.
+// VITE_API_BASE reste prioritaire si défini (override manuel).
+const API_BASE =
+  import.meta.env.VITE_API_BASE ??
+  (Capacitor.isNativePlatform() ? "https://ccf-web.vercel.app" : "");
 
 /**
  * Interroge l'IA (via la fonction serverless /api/verse) avec un verset ou
