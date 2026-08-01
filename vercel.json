@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/releases/:file",
+      "source": "/releases/ccf.apk",
       "headers": [
         {
           "key": "Content-Type",

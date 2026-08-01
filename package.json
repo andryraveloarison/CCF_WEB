@@ -13,6 +13,7 @@
     "@capacitor/android": "^7.4.2",
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
+    "@capgo/capacitor-updater": "^7.50.2",
     "@react-icons/all-files": "^4.1.0",
     "glob": "^7.2.3",
     "lucide-react": "^0.525.0",
