@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 interface Song {
@@ -8,10 +8,81 @@ interface Song {
   lyrics: string;
 }
 
+// Zoom des paroles au pincement (deux doigts). Taille en px, bornée.
+const FONT_MIN = 12;
+const FONT_MAX = 40;
+const FONT_DEFAULT = 15;
+const FONT_STORAGE_KEY = 'lyricsFontSize';
+
+const readSavedFontSize = () => {
+  const saved = Number(localStorage.getItem(FONT_STORAGE_KEY));
+  return saved >= FONT_MIN && saved <= FONT_MAX ? saved : FONT_DEFAULT;
+};
+
+const clamp = (v: number) => Math.min(FONT_MAX, Math.max(FONT_MIN, v));
+
+const touchDistance = (touches: TouchList) =>
+  Math.hypot(
+    touches[0].clientX - touches[1].clientX,
+    touches[0].clientY - touches[1].clientY
+  );
+
 const Lyrics = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [song, setSong] = useState<Song | null>(null);
+  const [fontSize, setFontSize] = useState<number>(readSavedFontSize);
+
+  // Ref du conteneur scrollable : on y attache des listeners tactiles NON
+  // passifs (React les pose en passif par défaut, ce qui empêche preventDefault
+  // et laisse le scroll perturber le pincement).
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const pinch = useRef<{ startDist: number; startSize: number } | null>(null);
+  // Taille courante lisible dans les handlers sans re-attacher les listeners.
+  const fontSizeRef = useRef(fontSize);
+  fontSizeRef.current = fontSize;
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        pinch.current = {
+          startDist: touchDistance(e.touches),
+          startSize: fontSizeRef.current,
+        };
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && pinch.current) {
+        e.preventDefault(); // pas de scroll pendant le pincement
+        const scale = touchDistance(e.touches) / pinch.current.startDist;
+        setFontSize(clamp(pinch.current.startSize * scale));
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) pinch.current = null;
+    };
+
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+    el.addEventListener('touchcancel', onTouchEnd);
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+      el.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, []);
+
+  // Mémorise la taille choisie pour la retrouver sur les autres chants.
+  useEffect(() => {
+    localStorage.setItem(FONT_STORAGE_KEY, String(Math.round(fontSize)));
+  }, [fontSize]);
 
   useEffect(() => {
     const fetchLyrics = async () => {
@@ -85,11 +156,13 @@ const Lyrics = () => {
 
       {/* ── Paroles ────────────────────────────────────────── */}
       <div
+        ref={scrollRef}
         id="lyrics-scroll"
-        className="flex-1 overflow-y-auto px-6 pt-6 pb-40"
+        className="flex-1 overflow-y-auto px-6 pt-6 pb-40 touch-pan-y"
       >
         <div
-          className="text-[15px] leading-relaxed space-y-4 [&_*]:!text-[var(--ink)]"
+          className="leading-relaxed space-y-4 [&_*]:!text-[var(--ink)]"
+          style={{ fontSize: `${fontSize}px` }}
           dangerouslySetInnerHTML={{ __html: song.lyrics }}
         />
       </div>
