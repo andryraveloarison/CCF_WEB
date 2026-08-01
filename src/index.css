@@ -12,6 +12,7 @@
   --ink-soft: #6b6b68;   /* secondary text */
   --hairline: #d4d2ce;   /* thin dividers */
   --accent: #dd8502;     /* single amber accent (active dot) */
+  --rust: #b7410e;       /* rouille — marque CCF */
 }
 
 html,
@@ -32,6 +33,13 @@ body {
   height: 100%;
   overflow: auto;
   background-color: var(--paper);
+}
+
+/* Marque CCF — police stylée */
+.brand {
+  font-family: "Pacifico", "Brush Script MT", cursive;
+  color: var(--accent);
+  line-height: 1;
 }
 
 /* Uppercase tracked micro-labels used across the app */

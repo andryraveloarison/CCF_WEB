@@ -4,6 +4,11 @@ export interface SongSuggestion {
   reason: string; // pourquoi ce chant correspond au verset
 }
 
+export interface VerseResult {
+  passage: string; // contenu du passage biblique (ou résumé)
+  songs: SongSuggestion[];
+}
+
 // Base API : vide (chemin relatif) sur le web Vercel ; pour l'app native
 // Capacitor, définir VITE_API_BASE = https://<ton-domaine-vercel>
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
@@ -14,7 +19,7 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "";
  */
 export const suggestSongsFromVerse = async (
   verse: string
-): Promise<SongSuggestion[]> => {
+): Promise<VerseResult> => {
   const res = await fetch(`${API_BASE}/api/verse`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,5 +32,8 @@ export const suggestSongsFromVerse = async (
   }
 
   const data = await res.json();
-  return Array.isArray(data.songs) ? (data.songs as SongSuggestion[]) : [];
+  return {
+    passage: typeof data.passage === "string" ? data.passage : "",
+    songs: Array.isArray(data.songs) ? (data.songs as SongSuggestion[]) : [],
+  };
 };

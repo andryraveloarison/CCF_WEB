@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Loader2, Menu, SmartphoneNfc, ArrowUpRight } from 'lucide-react';
-import ReloadButton from '../components/ReloadButton';
+import { Loader2, ArrowUpRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
 import { getSongsFromApi, getSongsFromCache } from "../services/song/ManageSong";
 
 type Song = {
@@ -10,52 +10,11 @@ type Song = {
   lyrics: string;
 };
 
-const APK_URL = "/releases/ccf.apk";
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
 
 const SongList = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // 📥 Téléchargement robuste de l'APK (contourne le service worker / PWA standalone)
-  const downloadApk = async () => {
-    try {
-      setDownloading(true);
-      const res = await fetch(APK_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ccf.apk';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      // Repli : navigation directe, laisse le serveur forcer le téléchargement
-      console.error('Téléchargement APK échoué, repli direct :', err);
-      window.location.href = APK_URL;
-    } finally {
-      setDownloading(false);
-      setMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
@@ -95,43 +54,7 @@ const SongList = () => {
 
       {/* ── Header ─────────────────────────────────────────── */}
       <header className="px-6 pt-8 shrink-0">
-        <div className="flex items-start justify-between">
-          <span className="eyebrow">CCF</span>
-          <div className="flex items-center gap-4">
-            <ReloadButton onReload={fetchFromApi} />
-            <div className="relative" ref={menuRef}>
-              <Menu
-                size={18}
-                strokeWidth={1.5}
-                className="cursor-pointer"
-                onClick={() => setMenuOpen(!menuOpen)}
-              />
-              {menuOpen && (
-                <div className="absolute top-9 right-0 z-50 bg-white rounded-2xl shadow-xl overflow-hidden min-w-[240px]">
-                  {isIOS ? (
-                    <div className="flex items-center gap-3 px-4 py-3.5 text-gray-500 text-sm">
-                      <SmartphoneNfc size={18} strokeWidth={1.5} className="shrink-0 text-[var(--accent)]" />
-                      App disponible sur Android uniquement
-                    </div>
-                  ) : (
-                    <button
-                      onClick={downloadApk}
-                      disabled={downloading}
-                      className="flex w-full items-center gap-3 px-4 py-3.5 text-left text-gray-800 hover:bg-gray-100 text-sm disabled:opacity-60"
-                    >
-                      {downloading ? (
-                        <Loader2 size={18} strokeWidth={1.5} className="animate-spin text-[var(--accent)] shrink-0" />
-                      ) : (
-                        <Download size={18} strokeWidth={1.5} className="text-[var(--accent)] shrink-0" />
-                      )}
-                      {downloading ? 'Téléchargement…' : "Télécharger l'app Android"}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <TopBar onReload={fetchFromApi} />
 
         {/* Big display count + title */}
         <div className="mt-6 flex items-end justify-between">

@@ -1,35 +1,92 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, Sparkles, ArrowUpRight } from "lucide-react";
+import { Loader2, Sparkles, ArrowUpRight, ChevronDown } from "lucide-react";
+import TopBar from "../components/TopBar";
 import {
   suggestSongsFromVerse,
   type SongSuggestion,
 } from "../services/chat/SuggestSongsFromVerse";
+import bibleData from "../data/bible.json";
 
-const EXAMPLES = [
-  "Cherchez premièrement le royaume de Dieu — Matthieu 6:33",
-  "L'Éternel est mon berger — Psaume 23",
-  "Que tout ce qui respire loue l'Éternel — Psaume 150",
-];
+// { "Genèse": [31, 25, ...], ... } → nb de versets par chapitre
+const bible = bibleData as Record<string, number[]>;
+const BOOKS = Object.keys(bible);
+
+const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
+
+// Raccourcit un texte trop long pour l'affichage
+const summarize = (t: string, n = 120) =>
+  t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t;
+
+// Style commun des menus déroulants
+const selectClass =
+  "w-full appearance-none bg-transparent border-b border-[var(--hairline)] py-2 pr-7 text-[15px] outline-none focus:border-[var(--ink)] disabled:opacity-40";
 
 const Verse = () => {
-  const [verse, setVerse] = useState("");
+  const [book, setBook] = useState("");
+  const [chapter, setChapter] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+
+  const [askedRef, setAskedRef] = useState("");
+  const [passage, setPassage] = useState("");
   const [results, setResults] = useState<SongSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
-  const ask = async (q?: string) => {
-    const query = (q ?? verse).trim();
-    if (!query || loading) return;
-    if (q) setVerse(q);
+  // Options dépendantes du choix courant
+  const chapterCount = book ? bible[book].length : 0;
+  const verseCount =
+    book && chapter ? bible[book][Number(chapter) - 1] : 0;
+
+  const startOptions = useMemo(() => range(verseCount), [verseCount]);
+  const endOptions = useMemo(
+    () =>
+      verseCount && start
+        ? range(verseCount).filter((v) => v >= Number(start))
+        : [],
+    [verseCount, start]
+  );
+
+  // Réinitialise la cascade quand un niveau supérieur change
+  const onBook = (v: string) => {
+    setBook(v);
+    setChapter("");
+    setStart("");
+    setEnd("");
+  };
+  const onChapter = (v: string) => {
+    setChapter(v);
+    setStart("");
+    setEnd("");
+  };
+  const onStart = (v: string) => {
+    setStart(v);
+    setEnd((prev) => (prev && Number(prev) >= Number(v) ? prev : ""));
+  };
+
+  const buildRef = () => {
+    let ref = `${book} ${chapter}:${start}`;
+    if (end && Number(end) > Number(start)) ref += `-${end}`;
+    return ref;
+  };
+
+  const canAsk = book && chapter && start && !loading;
+
+  const ask = async () => {
+    if (!canAsk) return;
+    const ref = buildRef();
 
     setLoading(true);
     setError("");
     setSearched(true);
+    setAskedRef(ref);
+    setPassage("");
     setResults([]);
     try {
-      const songs = await suggestSongsFromVerse(query);
+      const { passage: text, songs } = await suggestSongsFromVerse(ref);
+      setPassage(text);
       setResults(songs);
       if (songs.length === 0) setError("Aucun chant correspondant trouvé.");
     } catch (e) {
@@ -39,12 +96,22 @@ const Verse = () => {
     }
   };
 
+  const Chevron = () => (
+    <ChevronDown
+      size={16}
+      strokeWidth={1.5}
+      className="pointer-events-none absolute right-0 top-2.5 text-[var(--ink-soft)]"
+    />
+  );
+
   return (
     <div className="fixed inset-0 flex flex-col bg-[var(--paper)] text-[var(--ink)]">
 
       {/* ── Header ─────────────────────────────────────────── */}
       <header className="px-6 pt-8 shrink-0">
-        <div className="flex items-center justify-between">
+        <TopBar />
+
+        <div className="mt-6 flex items-center justify-between">
           <span className="eyebrow">Assistant IA</span>
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
@@ -56,68 +123,151 @@ const Verse = () => {
           Trouver un chant
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--ink-soft)]">
-          Entrez un verset ou un thème, l'IA propose les chants du répertoire
+          Choisissez un passage biblique, l'IA propose les chants du répertoire
           les mieux adaptés.
         </p>
 
-        {/* Zone de saisie */}
+        {/* Sélecteur de référence : livre → chapitre → début → fin */}
         <div className="mt-6 border-t border-[var(--ink)] pt-4">
-          <textarea
-            value={verse}
-            onChange={(e) => setVerse(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                ask();
-              }
-            }}
-            rows={2}
-            placeholder="Ex : Cherchez premièrement le royaume de Dieu…"
-            className="w-full bg-transparent outline-none text-[15px] resize-none placeholder:text-[var(--ink-soft)]"
-          />
+          <label className="eyebrow">Livre</label>
+          <div className="relative mt-1">
+            <select
+              value={book}
+              onChange={(e) => onBook(e.target.value)}
+              className={selectClass}
+            >
+              <option value="" disabled>
+                — Sélectionner un livre —
+              </option>
+              {BOOKS.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+            <Chevron />
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            <div>
+              <label className="eyebrow">Chapitre</label>
+              <div className="relative mt-1">
+                <select
+                  value={chapter}
+                  onChange={(e) => onChapter(e.target.value)}
+                  disabled={!book}
+                  className={selectClass}
+                >
+                  <option value="" disabled>
+                    —
+                  </option>
+                  {range(chapterCount).map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <Chevron />
+              </div>
+            </div>
+
+            <div>
+              <label className="eyebrow">Début</label>
+              <div className="relative mt-1">
+                <select
+                  value={start}
+                  onChange={(e) => onStart(e.target.value)}
+                  disabled={!chapter}
+                  className={selectClass}
+                >
+                  <option value="" disabled>
+                    —
+                  </option>
+                  {startOptions.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                <Chevron />
+              </div>
+            </div>
+
+            <div>
+              <label className="eyebrow">Fin</label>
+              <div className="relative mt-1">
+                <select
+                  value={end}
+                  onChange={(e) => setEnd(e.target.value)}
+                  disabled={!start}
+                  className={selectClass}
+                >
+                  <option value="">—</option>
+                  {endOptions.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                <Chevron />
+              </div>
+            </div>
+          </div>
+
+          {/* Aperçu de la référence */}
+          {book && chapter && start && (
+            <p className="mt-3 eyebrow text-[var(--accent)]">{buildRef()}</p>
+          )}
+
           <button
-            onClick={() => ask()}
-            disabled={loading || verse.trim() === ""}
-            className="mt-2 w-full flex items-center justify-center gap-2 bg-[var(--ink)] text-[var(--paper)] py-3 text-xs uppercase tracking-[0.18em] disabled:opacity-50"
+            onClick={ask}
+            disabled={!canAsk}
+            className="mt-4 w-full flex items-center justify-center gap-2 bg-[var(--ink)] text-[var(--paper)] py-3 text-xs uppercase tracking-[0.18em] disabled:opacity-50"
           >
             {loading ? (
               <Loader2 size={15} strokeWidth={1.5} className="animate-spin" />
             ) : (
               <Sparkles size={15} strokeWidth={1.5} />
             )}
-            {loading ? "Recherche…" : "Interroger l'IA"}
+            {loading ? "Suggestion…" : "Suggérer"}
           </button>
         </div>
       </header>
 
       {/* ── Résultats ──────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
-        {!searched && (
-          <div>
-            <span className="eyebrow">Exemples</span>
-            <div className="mt-3 space-y-px">
-              {EXAMPLES.map((ex) => (
-                <button
-                  key={ex}
-                  onClick={() => ask(ex)}
-                  className="w-full text-left py-3 border-b border-[var(--hairline)] text-[14px] text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors"
-                >
-                  {ex}
-                </button>
-              ))}
+        {searched && (
+          <>
+            {/* Contenu du passage (ou résumé si trop long) */}
+            <div className="mb-6 border-l-2 border-[var(--accent)] pl-3">
+              <span className="eyebrow">{askedRef}</span>
+              {passage ? (
+                <p className="mt-1 text-[14px] leading-relaxed italic">
+                  « {summarize(passage, 280)} »
+                </p>
+              ) : (
+                !loading &&
+                !error && (
+                  <p className="mt-1 text-[13px] text-[var(--ink-soft)]">
+                    Contenu du passage indisponible.
+                  </p>
+                )
+              )}
             </div>
-          </div>
-        )}
 
-        {error && (
-          <p className="py-6 text-[13px] text-[var(--ink-soft)]">{error}</p>
+            {error && (
+              <p className="py-2 text-[13px] text-[var(--ink-soft)]">{error}</p>
+            )}
+          </>
         )}
 
         {results.length > 0 && (
           <div>
             <div className="flex items-center justify-between border-b border-[var(--hairline)] pb-2">
               <span className="eyebrow">Chants suggérés</span>
-              <span className="eyebrow">{String(results.length).padStart(2, "0")}</span>
+              <span className="eyebrow">
+                {String(results.length).padStart(2, "0")}
+              </span>
             </div>
             {results.map((s, i) => {
               const row = (

@@ -5,6 +5,7 @@ import {
   Info
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import TopBar from "../components/TopBar";
 
 const Verification = () => {
   const [code, setCode] = useState("");
@@ -28,10 +29,14 @@ const Verification = () => {
 
 
   return (
-    <div className="fixed inset-0 flex flex-col justify-center bg-[var(--paper)] text-[var(--ink)] px-6 pb-[14vh]">
+    <div className="fixed inset-0 flex flex-col bg-[var(--paper)] text-[var(--ink)]">
+      <header className="px-6 pt-8 shrink-0">
+        <TopBar />
+      </header>
 
       {/* 🔒 Vérification obligatoire */}
-      {!isVerified && (
+      <div className="flex-1 flex flex-col justify-center px-6 pb-[14vh]">
+        {!isVerified && (
         <div className="w-full max-w-sm mx-auto">
           <span className="eyebrow">Accès restreint</span>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight leading-none">
@@ -72,8 +77,8 @@ const Verification = () => {
             Vérifier
           </button>
         </div>
-      )}
-
+        )}
+      </div>
     </div>
   );
 };
