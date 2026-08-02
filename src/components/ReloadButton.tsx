@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RefreshCcw, Loader2 } from "lucide-react";
+import { checkForUpdateNow } from "../services/update/LiveUpdate";
 
 type Props = {
   onReload?: () => void ;
@@ -8,12 +9,21 @@ type Props = {
 const ReloadButton = ({ onReload }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const handleReload = () => {
-    onReload && onReload()
+  const handleReload = async () => {
+    onReload && onReload();
     setLoading(true);
-    setTimeout(() => {
-      window.location.reload(); // ou autre action
-    }, 2000);
+
+    // En natif : on tente d'abord de récupérer et d'appliquer la dernière
+    // version OTA (le nouveau code web). Si 'updated', set() a déjà rechargé
+    // l'app ; sinon on recharge simplement le webview (données à jour).
+    try {
+      const result = await checkForUpdateNow();
+      if (result === "updated") return; // set() recharge déjà l'app
+    } catch {
+      /* on retombe sur le reload classique ci-dessous */
+    }
+
+    window.location.reload();
   };
 
   return (

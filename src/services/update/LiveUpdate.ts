@@ -47,3 +47,44 @@ export async function initLiveUpdates(): Promise<void> {
     console.log('Mise à jour OTA ignorée :', err);
   }
 }
+
+export type ManualUpdateResult = 'updated' | 'up-to-date' | 'web' | 'error';
+
+/**
+ * Mise à jour OTA MANUELLE (bouton « Actualiser »).
+ *
+ * Différence clé avec initLiveUpdates() : ici on applique la nouvelle version
+ * IMMÉDIATEMENT via CapacitorUpdater.set() (qui recharge le webview sur le
+ * nouveau bundle), au lieu de .next() qui n'active la MàJ qu'au prochain
+ * lancement à froid — lancement que les utilisateurs font rarement sur Android.
+ *
+ * - 'web'         : pas en natif, au caller de recharger la page.
+ * - 'up-to-date'  : déjà à la dernière version.
+ * - 'updated'     : rarement renvoyé — set() recharge le webview avant le return.
+ * - 'error'       : hors-ligne ou échec réseau.
+ */
+export async function checkForUpdateNow(): Promise<ManualUpdateResult> {
+  if (!Capacitor.isNativePlatform()) return 'web';
+
+  try {
+    const res = await fetch(`${UPDATE_BASE}/version.json`, { cache: 'no-store' });
+    if (!res.ok) return 'error';
+
+    const { version } = (await res.json()) as { version?: string };
+    if (!version) return 'error';
+
+    const current = await CapacitorUpdater.current();
+    if (current.bundle.version === version) return 'up-to-date';
+
+    const bundle = await CapacitorUpdater.download({
+      url: `${UPDATE_BASE}/bundle.zip`,
+      version,
+    });
+    // Applique tout de suite : recharge le webview sur le nouveau bundle.
+    await CapacitorUpdater.set({ id: bundle.id });
+    return 'updated';
+  } catch (err) {
+    console.log('Mise à jour manuelle échouée :', err);
+    return 'error';
+  }
+}
