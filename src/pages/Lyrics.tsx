@@ -77,7 +77,11 @@ const Lyrics = () => {
       el.removeEventListener('touchend', onTouchEnd);
       el.removeEventListener('touchcancel', onTouchEnd);
     };
-  }, []);
+    // Dépend de `song` : le conteneur des paroles n'est monté (donc scrollRef
+    // n'est défini) qu'une fois le chant chargé. Sans cette dépendance, l'effet
+    // s'exécuterait une seule fois au montage — quand song est encore null et
+    // que scrollRef.current vaut null — et n'attacherait jamais les écouteurs.
+  }, [song]);
 
   // Mémorise la taille choisie pour la retrouver sur les autres chants.
   useEffect(() => {
