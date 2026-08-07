@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { ArrowLeft,  PlusCircle, Search } from 'lucide-react';
-import {  getSongsFromCache } from "../services/song/ManageSong";
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Plus, ArrowUpRight } from 'lucide-react';
+import { getSongsFromCache } from "../services/song/ManageSong";
 
 type Song = {
   id: string;
@@ -13,19 +13,17 @@ const ManageSong = () => {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState<Song[]>([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   // 🔽 Charger depuis le cache (par défaut, sans requête)
   useEffect(() => {
     getSongsFromCache().then((data) => {
       if (data) setSongs(data);
     });
-  
+
     const container = document.getElementById('main-scroll');
     if (container) container.scrollTo(0, 0);
   }, []);
-  
-
-  
 
   const sortedSongs = [...songs].sort((a, b) =>
     a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
@@ -36,79 +34,89 @@ const ManageSong = () => {
   );
 
   return (
-    <>
+    <div className="fixed inset-0 flex flex-col bg-[var(--paper)] text-[var(--ink)]">
+      {/* ── Header ─────────────────────────────────────────── */}
+      <header className="px-6 pt-8 shrink-0">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors"
+            title="Retour"
+          >
+            <ArrowLeft size={18} strokeWidth={1.5} />
+            <span className="eyebrow">Retour</span>
+          </button>
 
-      {/* Header */}
-      <div className="fixed top-0 left-0 h-[20vh] right-0 z-50 bg-black text-white rounded-bl-[30px] rounded-br-[30px]">
-        <div className="flex items-center justify-end px-4 pt-6">
-            <button onClick={() => navigate(-1)}
-          className="fixed top-4 left-4 z-50 bg-[rgba(221,133,2,0.773)] p-2 rounded-full  text-black"
-          title="Retour"
-            >
-            <ArrowLeft size={20} />
-        </button>   
-        <div>
-
-        <NavLink 
-                to="/addSong" 
-                className={({ isActive }) => 
-                `transition duration-200 ${
-                    isActive 
-                    ? 'text-[rgba(221,133,2,0.973)]' 
-                    : 'text-white opacity-80'
-                } hover:text-[rgba(221,133,2,0.973)]`
-                }
-            >
-        <PlusCircle size={26} onClick={() => navigate("/addSong")}/>
-      </NavLink>        
-      
-      </div>
-
+          <button
+            onClick={() => navigate('/addSong')}
+            className="flex items-center gap-2 border border-[var(--ink)] px-3 py-2 text-[10px] uppercase tracking-[0.16em] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
+            title="Ajouter un chant"
+          >
+            <Plus size={15} strokeWidth={1.5} />
+            Ajouter
+          </button>
         </div>
 
-        <div className="px-4 mt-4">
-          <div className="flex items-center bg-white text-black rounded-[12px] px-4 py-2">
-            <input
-              type="text"
-              placeholder="Recherche..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-sm"
-            />
-            <Search size={20} className="text-gray-600" />
-          </div>
-        </div>
-      </div>
-
-
-
-      {/* Liste */}
-      <div className="fixed top-[20vh] bg-black">
-        <div className=" w-full pt-5 left-0 w-screen bg-white text-gray-800 pb-20 h-[calc(100vh-100px)]">
-          <h2 className="text-xl font-bold mb-2 px-5">Liste des chants</h2>
+        <div className="mt-6 flex items-end justify-between">
           <div>
-            <div
-              id="main-scroll"
-              className="px-4 overflow-y-auto max-h-[calc(100vh-240px)] pb-[12vh] space-y-2"
-            >
-              {filteredSongs.map((song, index) => (
-                <Link
-                  to={`/song/edit/${song.id}`}
-                  key={song.id}
-                  className="rounded-xl p-3 border border-gray-300 flex items-center justify-between hover:bg-gray-100"
-                >
-                  <div>
-                    <div className="text-sm font-bold">
-                      {index + 1} - {song.title}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <span className="eyebrow">Gestion des chants</span>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight leading-none">
+              Gérer
+            </h1>
           </div>
+          <span className="display text-7xl">
+            {String(filteredSongs.length).padStart(2, '0')}
+          </span>
         </div>
+
+        <div className="mt-6 border-b border-[var(--hairline)] pb-2">
+          <input
+            type="text"
+            placeholder="Rechercher un chant"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm placeholder:text-[var(--ink-soft)]"
+          />
+        </div>
+
+        <div className="mt-6 flex items-center justify-between">
+          <span className="eyebrow">Titre</span>
+          <span className="eyebrow">Modifier</span>
+        </div>
+      </header>
+
+      {/* ── Liste ──────────────────────────────────────────── */}
+      <div
+        id="main-scroll"
+        className="flex-1 overflow-y-auto px-6 pb-32 mt-2 border-t border-[var(--hairline)]"
+      >
+        {filteredSongs.map((song, index) => (
+          <Link
+            to={`/song/edit/${song.id}`}
+            key={song.id}
+            className="group flex items-center justify-between gap-4 py-4 border-b border-[var(--hairline)]"
+          >
+            <div className="flex items-baseline gap-4 min-w-0">
+              <span className="eyebrow tabular-nums shrink-0">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="text-[15px] leading-snug truncate">
+                {song.title}
+              </span>
+            </div>
+            <ArrowUpRight
+              size={16}
+              strokeWidth={1.5}
+              className="shrink-0 text-[var(--ink-soft)] group-hover:text-[var(--ink)] transition-colors"
+            />
+          </Link>
+        ))}
+
+        {filteredSongs.length === 0 && (
+          <p className="py-10 text-center eyebrow">Aucun résultat</p>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
